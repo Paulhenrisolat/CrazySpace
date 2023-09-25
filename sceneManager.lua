@@ -1,10 +1,13 @@
 local SceneManager = {}
 
+UiManager = require("uiManager")
+TitleMenu = require("titleMenu")
+
 SceneManager.actualScene = nill
 
 SceneManager.scenes = {}
 
-function SceneManager.AddScene(sceneName)
+function SceneManager.addScene(sceneName)
     local newScene = {}
     newScene.sceneName = sceneName
     newScene.scene = require(sceneName)
@@ -14,7 +17,19 @@ function SceneManager.AddScene(sceneName)
     print("Scene Number: "..#SceneManager.scenes)
 end
 
-function SceneManager.LoadScene()
+function SceneManager.changeScene()
+    for i = #SceneManager.scenes,1,-1 do
+        local s = SceneManager.scenes[i]
+        if s.sceneName == "titleMenu" and s.isActive == true then
+            s.isActive = false
+        elseif s.sceneName == "titleMenu" then
+            s.isActive = true
+        end
+        print("Scenes Status ["..tostring(s.scene).."|"..s.sceneName.."|"..tostring(s.isActive).."]")
+    end
+end
+
+function SceneManager.loadScene()
     for i = #SceneManager.scenes,1,-1 do
         local s = SceneManager.scenes[i]
         if s.isActive == true then
@@ -27,28 +42,22 @@ function SceneManager.LoadScene()
 end
 
 function SceneManager.load()
-    SceneManager.AddScene("titleMenu")
+    UiManager.load()
+    SceneManager.addScene("titleMenu")
+    TitleMenu.load()
 end
 
 function SceneManager.update(dt)
-
+    UiManager.update(dt)
 end
 
 function SceneManager.draw()
-    SceneManager.LoadScene()
+    SceneManager.loadScene()
 end
 
 function SceneManager.keypressed(key)
     if key == "space" then
-        for i = #SceneManager.scenes,1,-1 do
-            local s = SceneManager.scenes[i]
-            if s.sceneName == "titleMenu" and s.isActive == true then
-                s.isActive = false
-            elseif s.sceneName == "titleMenu" then
-                s.isActive = true
-            end
-            print("Scenes Status ["..tostring(s.scene).."|"..s.sceneName.."|"..tostring(s.isActive).."]")
-        end
+        SceneManager.changeScene()
     end
 end
 
