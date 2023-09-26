@@ -30,9 +30,12 @@ end
 function UiManager.mouseOnButton()
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
-        --print("BTN["..i.."] pos X: "..b.x.." Y: "..b.y)
-        if UiManager.mouseX >= b.x and UiManager.mouseY >= b.x then
+
+        if b.x + UiManager.buttons[i].imgOX >= UiManager.mouseX and  b.x - UiManager.buttons[i].imgOX <= UiManager.mouseX 
+           and b.y + UiManager.buttons[i].imgOY >= UiManager.mouseY and  b.y - UiManager.buttons[i].imgOY <= UiManager.mouseY then
             UiManager.mouseIsOnBTN = true
+            --print(b.x + UiManager.buttons[i].imgOX)
+
         else
             UiManager.mouseIsOnBTN = false
         end

@@ -35,7 +35,7 @@ function SceneManager.loadScene()
         if s.isActive == true then
             s.scene.draw()
         else
-            love.graphics.print("SceneManager Debbug",x,y)
+            love.graphics.print("SceneManager Debbug *Press SPACE*",x,y)
             love.graphics.print("Scene loaded: "..#SceneManager.scenes,x,15)
         end
     end
