@@ -31,14 +31,11 @@ function SceneManager.changeScene()
     end
 end
 
-function SceneManager.loadScene()
+function SceneManager.drawScene()
     for i = #SceneManager.scenes,1,-1 do
         local s = SceneManager.scenes[i]
         if s.isActive == true then
             s.scene.draw()
-        --else
-            --love.graphics.print("SceneManager Debbug *Press SPACE*",x,y)
-            --love.graphics.print("Scene loaded: "..#SceneManager.scenes.." Scene Active: "..SceneManager.actualScene,x,15)
         end
     end
 end
@@ -46,16 +43,17 @@ end
 function SceneManager.load()
     SceneManager.addScene("titleMenu")
     SceneManager.addScene("gameplay")
-    
+
     UiManager.load()
     TitleMenu.load()
     Gameplay.load()
 end
 
 function SceneManager.update(dt)
+    SceneManager.changeScene()
     SceneManager.actualScene = UiManager.actualScene
     
-    SceneManager.changeScene()
+    
     UiManager.update(dt)
 
     for i = #SceneManager.scenes,1,-1 do
@@ -67,14 +65,16 @@ function SceneManager.update(dt)
 end
 
 function SceneManager.draw()
-    SceneManager.loadScene()
+    SceneManager.drawScene()
+    --debug
+    love.graphics.print("Scene: "..SceneManager.actualScene, UiManager.screenW-150, UiManager.screenH-30)
 end
 
 function SceneManager.keypressed(key)
     PauseMenu.keypressed(key)
     if key == "space" then
         --SceneManager.changeScene("titleMenu")
-        SceneManager.actualScene = "titleMenu"
+        --SceneManager.actualScene = "titleMenu"
     end
 end
 
