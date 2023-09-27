@@ -1,9 +1,11 @@
 local SceneManager = {}
 
-UiManager = require("uiManager")
-TitleMenu = require("titleMenu")
+local UiManager = require("uiManager")
+local TitleMenu = require("titleMenu")
+local PauseMenu = require("pauseMenu")
+local Gameplay = require("gameplay")
 
-SceneManager.actualScene = nill
+SceneManager.actualScene = "noScene"
 
 SceneManager.scenes = {}
 
@@ -20,12 +22,12 @@ end
 function SceneManager.changeScene()
     for i = #SceneManager.scenes,1,-1 do
         local s = SceneManager.scenes[i]
-        if s.sceneName == "titleMenu" and s.isActive == true then
-            s.isActive = false
-        elseif s.sceneName == "titleMenu" then
+        if s.sceneName == SceneManager.actualScene then
             s.isActive = true
+        elseif s.sceneName ~= SceneManager.actualScene then
+            s.isActive = false
         end
-        print("Scenes Status ["..tostring(s.scene).."|"..s.sceneName.."|"..tostring(s.isActive).."]")
+        --print("Scenes Status ["..tostring(s.scene).."|"..s.sceneName.."|"..tostring(s.isActive).."]")
     end
 end
 
@@ -34,21 +36,34 @@ function SceneManager.loadScene()
         local s = SceneManager.scenes[i]
         if s.isActive == true then
             s.scene.draw()
-        else
-            love.graphics.print("SceneManager Debbug *Press SPACE*",x,y)
-            love.graphics.print("Scene loaded: "..#SceneManager.scenes,x,15)
+        --else
+            --love.graphics.print("SceneManager Debbug *Press SPACE*",x,y)
+            --love.graphics.print("Scene loaded: "..#SceneManager.scenes.." Scene Active: "..SceneManager.actualScene,x,15)
         end
     end
 end
 
 function SceneManager.load()
-    UiManager.load()
     SceneManager.addScene("titleMenu")
+    SceneManager.addScene("gameplay")
+    
+    UiManager.load()
     TitleMenu.load()
+    Gameplay.load()
 end
 
 function SceneManager.update(dt)
+    SceneManager.actualScene = UiManager.actualScene
+    
+    SceneManager.changeScene()
     UiManager.update(dt)
+
+    for i = #SceneManager.scenes,1,-1 do
+        local s = SceneManager.scenes[i]
+        if s.isActive == true then
+            s.scene.update(dt)
+        end
+    end
 end
 
 function SceneManager.draw()
@@ -56,9 +71,15 @@ function SceneManager.draw()
 end
 
 function SceneManager.keypressed(key)
+    PauseMenu.keypressed(key)
     if key == "space" then
-        SceneManager.changeScene()
+        --SceneManager.changeScene("titleMenu")
+        SceneManager.actualScene = "titleMenu"
     end
+end
+
+function SceneManager.mousepressed(x, y, button, istouch)
+    UiManager.mousepressed(x, y, button, istouch)
 end
 
 return SceneManager
