@@ -47,7 +47,6 @@ end
 function Player.load()
   Player.x = UiManager.screenCenterX
   Player.y = UiManager.screenCenterY
-  print(Player.x)
 end
 
 function Player.update(dt)
