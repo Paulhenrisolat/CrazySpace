@@ -3,9 +3,8 @@ local UiManager = {}
 UiManager.buttons = {}
 UiManager.buttonsInScene = {}
 
-UiManager.screenW = love.graphics:getWidth()
-UiManager.screenH = love.graphics:getHeight()
-
+UiManager.screenW = 1000
+UiManager.screenH = 800
 UiManager.screenCenterX = UiManager.screenW/2
 UiManager.screenCenterY = UiManager.screenH/2
 
@@ -74,6 +73,12 @@ function UiManager.buttonAction()
 end
 
 function UiManager.load()
+    -- Screen config
+    love.window.setMode(UiManager.screenW, UiManager.screenH, {resizable=false})
+    UiManager.screenCenterX = UiManager.screenW/2
+    UiManager.screenCenterY = UiManager.screenH/2
+
+    -- Create all buton in the game
     UiManager.createButton("play", "playbtn")
     UiManager.createButton("option", "optionbtn")
     UiManager.createButton("exit", "exitbtn")

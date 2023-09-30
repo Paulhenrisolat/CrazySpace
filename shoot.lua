@@ -1,0 +1,68 @@
+local Shoot = {}
+
+Shoot.playerSpeed = 0
+Shoot.playerRotation = 0
+Shoot.projectileLifeTime = 3
+
+Shoot.projectiles = {}
+
+-- ball : x,y,rotation,image,speed,damage,timeBeforeRemove
+function Shoot.shooting(px, py, prot, pimg, pspeed, pdmg)
+    local newProjectile = {}
+    newProjectile.x = px 
+    newProjectile.y = py
+    newProjectile.rotation = prot
+    newProjectile.image = pimg
+    newProjectile.speed = pspeed
+    newProjectile.damage = pdmg
+    newProjectile.lifeTime = Shoot.projectileLifeTime
+    table.insert(Shoot.projectiles, newProjectile)
+end
+
+function Shoot.Scrolling(dt)
+    if love.keyboard.isDown("up","z") then    
+        local vx = Shoot.playerSpeed * math.cos(Shoot.playerRotation) * dt
+        local vy = Shoot.playerSpeed * math.sin(Shoot.playerRotation) * dt
+        for i=#Shoot.projectiles,1,-1 do
+            local b = Shoot.projectiles[i]
+            b.x = b.x - vx
+            b.y = b.y - vy
+        end
+    end
+    if love.keyboard.isDown("down","s") then    
+        local vx = Shoot.playerSpeed * math.cos(Shoot.playerRotation) * dt
+        local vy = Shoot.playerSpeed * math.sin(Shoot.playerRotation) * dt
+        for i=#Shoot.projectiles,1,-1 do
+            local b = Shoot.projectiles[i]
+            b.x = b.x + vx
+            b.y = b.y + vy
+        end
+    end
+end
+
+function Shoot.projectileMovement(dt)
+    for i=#Shoot.projectiles,1,-1 do 
+        local b = Shoot.projectiles[i]
+        b.x = b.x + dt * b.speed * math.cos(b.rotation)
+        b.y = b.y + dt * b.speed * math.sin(b.rotation)
+        b.lifeTime = b.lifeTime - 1 * dt
+        if b.lifeTime <= 0 then
+            table.remove(Shoot.projectiles, i)
+        end
+    end
+end
+
+function Shoot.update(dt)
+    Shoot.projectileMovement(dt)
+    Shoot.Scrolling(dt)
+end
+
+function Shoot.draw()
+    for i=#Shoot.projectiles,1,-1 do
+        local b = Shoot.projectiles[i]
+        love.graphics.draw(b.image, b.x, b.y, b.rotation, 1, 1,b.image:getWidth()/2, b.image:getHeight()/2)
+        --love.graphics.circle("line", b.x, b.y, projectiles.img:getWidth())
+    end
+end
+
+return Shoot

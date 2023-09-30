@@ -72,6 +72,7 @@ end
 
 function SceneManager.keypressed(key)
     PauseMenu.keypressed(key)
+    Gameplay.keypressed(key)
     if key == "space" then
         --SceneManager.changeScene("titleMenu")
         --SceneManager.actualScene = "titleMenu"

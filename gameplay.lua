@@ -3,6 +3,7 @@ local Gameplay = {}
 local UiManager = require("uiManager")
 local Player = require("player")
 local Ennemy = require("ennemy")
+local Shoot = require("shoot")
 
 Gameplay.bg = love.graphics.newImage("img/spaceia.jpg")
 Gameplay.bgX = 0
@@ -26,6 +27,8 @@ function Gameplay.Scrolling(dt)
 end
 
 function Gameplay.load()
+    Ennemy.mapWidth = Gameplay.bg:getWidth()
+    Ennemy.mapHeight = Gameplay.bg:getHeight()
     Player.load()
     Ennemy.load()
 end
@@ -33,6 +36,7 @@ end
 function Gameplay.update(dt)
     Player.update(dt)
     Ennemy.update(dt)
+    Shoot.update(dt)
     Gameplay.Scrolling(dt)
 end
 
@@ -40,8 +44,11 @@ function Gameplay.draw()
     love.graphics.draw(Gameplay.bg,Gameplay.bgX,Gameplay.bgY,0,5,5, Gameplay.bgOX, Gameplay.bgOY)
     Player.draw()
     Ennemy.draw()
-    --debug
-    --love.graphics.print()
+    Shoot.draw()
+end
+
+function Gameplay.keypressed(key)
+    Player.keypressed(key)
 end
 
 return Gameplay

@@ -10,6 +10,7 @@ love.graphics.setDefaultFilter("nearest")
 local SceneManager = require("sceneManager")
 
 function love.load()
+    --love.window.setMode(1000, 800, {resizable=true})
     SceneManager.load()
 end
 
