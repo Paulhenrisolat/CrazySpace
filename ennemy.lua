@@ -92,7 +92,7 @@ function Ennemy.spawning(ennemySelected, nbEnnemy)
                 newEnnemyInScene.type = e
                 newEnnemyInScene.x = love.math.random(Ennemy.mapWidth)
                 newEnnemyInScene.y = love.math.random(Ennemy.mapHeight)
-                newEnnemyInScene.radius = e.img:getWidth()
+                newEnnemyInScene.radius = e.img:getWidth()/2
                 newEnnemyInScene.maxHP = e.life
                 newEnnemyInScene.HP = e.life
                 newEnnemyInScene.reloadTime = e.reloadTime
@@ -110,7 +110,6 @@ function Ennemy.collision()
             if math.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
                 print("Hit !")
                 e.HP = e.HP - b.damage
-                
                 table.remove(Shoot.projectiles, a)
             end
         end
@@ -128,11 +127,11 @@ end
 
 function Ennemy.load()
     --Create ennemy : name,img,ballimg,life,speed,dmg,reloadtime
-    Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 1)
+    Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 5)
 end
 
 function Ennemy.update(dt)
-    Ennemy.spawning(weakling, 5)
+    Ennemy.spawning(weakling, 50)
     Ennemy.Scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()
