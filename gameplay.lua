@@ -45,6 +45,8 @@ function Gameplay.draw()
     Player.draw()
     Ennemy.draw()
     Shoot.draw()
+    --debug
+    love.graphics.print("Projectiles: "..#Shoot.projectiles,x,45)
 end
 
 function Gameplay.keypressed(key)

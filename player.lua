@@ -8,7 +8,7 @@ Player.y = 0
 Player.rotation = math.rad(-90)
 Player.speed = 180
 Player.actualSpeed = Player.speed
-Player.runSpeed = 800
+Player.runSpeed = 500--300
 Player.rotSpeed = 3
 Player.img = love.graphics.newImage("img/spaceshipv1.png")
 -- stats
@@ -62,7 +62,7 @@ end
 
 function Player.keypressed(key)
   if key == "space" then
-    Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage)
+    Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
   end
 end
 

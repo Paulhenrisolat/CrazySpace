@@ -2,20 +2,22 @@ local Shoot = {}
 
 Shoot.playerSpeed = 0
 Shoot.playerRotation = 0
-Shoot.projectileLifeTime = 3
+Shoot.projectileLifeTime = 1
 
 Shoot.projectiles = {}
 
 -- ball : x,y,rotation,image,speed,damage,timeBeforeRemove
-function Shoot.shooting(px, py, prot, pimg, pspeed, pdmg)
+function Shoot.shooting(px, py, prot, pimg, pspeed, pdmg, team)
     local newProjectile = {}
     newProjectile.x = px 
     newProjectile.y = py
     newProjectile.rotation = prot
     newProjectile.image = pimg
+    newProjectile.radius = newProjectile.image:getWidth()
     newProjectile.speed = pspeed
     newProjectile.damage = pdmg
     newProjectile.lifeTime = Shoot.projectileLifeTime
+    newProjectile.team = team
     table.insert(Shoot.projectiles, newProjectile)
 end
 
@@ -61,7 +63,8 @@ function Shoot.draw()
     for i=#Shoot.projectiles,1,-1 do
         local b = Shoot.projectiles[i]
         love.graphics.draw(b.image, b.x, b.y, b.rotation, 1, 1,b.image:getWidth()/2, b.image:getHeight()/2)
-        --love.graphics.circle("line", b.x, b.y, projectiles.img:getWidth())
+        --debug
+        --love.graphics.circle("line", b.x, b.y, b.radius)
     end
 end
 
