@@ -4,6 +4,7 @@ local UiManager = require("uiManager")
 local Player = require("player")
 local Ennemy = require("ennemy")
 local Shoot = require("shoot")
+local DeathManager = require("deathManager")
 
 Gameplay.bg = love.graphics.newImage("img/spaceia.jpg")
 Gameplay.bgX = 0
@@ -45,12 +46,14 @@ function Gameplay.draw()
     Player.draw()
     Ennemy.draw()
     Shoot.draw()
+    DeathManager.draw()
     --debug
     love.graphics.print("Projectiles: "..#Shoot.projectiles,x,45)
 end
 
 function Gameplay.keypressed(key)
     Player.keypressed(key)
+    DeathManager.keypressed(key)
 end
 
 return Gameplay

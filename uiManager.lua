@@ -11,64 +11,75 @@ UiManager.screenCenterY = UiManager.screenH/2
 UiManager.mouseX = love.mouse.getX()
 UiManager.mouseY = love.mouse.getY()
 
-UiManager.buttonSelected = 0
+UiManager.buttonSelectedname = "noBtn"
 
 UiManager.actualScene = "titleMenu"
 
-function UiManager.createButton(text, img)
+function UiManager.createButton(name, img)
     local newButton = {}
-    newButton.text = text
+    newButton.name = name
     newButton.img = love.graphics.newImage("img/"..img..".png")
     newButton.imgW = newButton.img:getWidth()
     newButton.imgH = newButton.img:getHeight()
     newButton.imgOX = newButton.imgW/2
     newButton.imgOY = newButton.imgH/2
-    newButton.imgScaleW = 1
-    newButton.imgScaleH = 1
     table.insert(UiManager.buttons, newButton)
 end
 
-function UiManager.addButton(btn, x, y)
-    love.graphics.draw(UiManager.buttons[btn].img, x, y, 0,UiManager.buttons[btn].imgScaleW,UiManager.buttons[btn].imgScaleH, UiManager.buttons[btn].imgOX,UiManager.buttons[btn].imgOY)
+function UiManager.addButtton(btnName, x,y)
+    for i=#UiManager.buttons,1,-1 do 
+        local b = UiManager.buttons[i]
+        print(b.name.." "..tostring(btnName))
+        if b.name == tostring(btnName) then
+            local newButtonInScene = {}
+            newButtonInScene.type = b
+            newButtonInScene.name = b.name
+            newButtonInScene.img = b.img
+            newButtonInScene.imgOX = b.imgOX
+            newButtonInScene.imgOY = b.imgOY
+            newButtonInScene.x = x
+            newButtonInScene.y = y
+            newButtonInScene.scaleW = 1
+            newButtonInScene.scaleH = 1
+            newButtonInScene.mouseOn = false
+            newButtonInScene.isActive = false
+            table.insert(UiManager.buttonsInScene, newButtonInScene)
+        end
+    end
 end
 
 function UiManager.mouseOnButton()
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
 
-        if UiManager.actualScene == "titleMenu" and b.x + UiManager.buttons[i].imgOX >= UiManager.mouseX and b.x - UiManager.buttons[i].imgOX <= UiManager.mouseX 
-           and b.y + UiManager.buttons[i].imgOY >= UiManager.mouseY and b.y - UiManager.buttons[i].imgOY <= UiManager.mouseY then
-            b.isActive = true
-            UiManager.buttonSelected = i
-            UiManager.buttons[i].imgScaleW = 2
-            UiManager.buttons[i].imgScaleH = 2
+        if UiManager.actualScene ~= "gameplay" and b.x + b.imgOX >= UiManager.mouseX and b.x - b.imgOX <= UiManager.mouseX 
+           and b.y + b.imgOY >= UiManager.mouseY and b.y - b.imgOY <= UiManager.mouseY then
+            b.mouseOn = true
+            UiManager.buttonSelectedname = b.name
+            b.scaleW = 2
+            b.scaleH = 2
+            --print(b.name.."/"..tostring(b.mouseOn))
         else
-            b.isActive = false
-            UiManager.buttons[i].imgScaleW = 1
-            UiManager.buttons[i].imgScaleH = 1
+            b.mouseOn = false
+            b.scaleW = 1
+            b.scaleH = 1
         end
     end
 end
 
 function UiManager.mousepressed(x, y, button, istouch)
     if button == 1 then
-        for i = #UiManager.buttonsInScene,1,-1 do
-            local b = UiManager.buttonsInScene[i]
-            if b.isActive == true then
-                UiManager.buttonAction()
-            end
-        end
+        UiManager.buttonAction()
     end
 end
 
 function UiManager.buttonAction()
-    if UiManager.buttonSelected == 1 then
-        UiManager.actualScene = "gameplay"
-        print(UiManager.actualScene)
-    end
-    if UiManager.buttonSelected == 2 then
-        UiManager.actualScene = "config"
-        print(UiManager.actualScene)
+    for i = #UiManager.buttonsInScene,1,-1 do
+        local b = UiManager.buttonsInScene[i]
+        if b.mouseOn == true then
+            UiManager.actualScene = tostring(b.name)
+            print("BTN pressed: "..UiManager.buttonSelectedname)
+        end
     end
 end
 
@@ -78,10 +89,11 @@ function UiManager.load()
     UiManager.screenCenterX = UiManager.screenW/2
     UiManager.screenCenterY = UiManager.screenH/2
 
-    -- Create all buton in the game
-    UiManager.createButton("play", "playbtn")
+    -- Create all buton in the game (scene/btnName, imgName)
+    UiManager.createButton("gameplay", "playbtn")
     UiManager.createButton("option", "optionbtn")
     UiManager.createButton("exit", "exitbtn")
+    UiManager.createButton("titleMenu", "mainmenubtn")
 end
 
 function UiManager.update(dt)
@@ -91,13 +103,17 @@ function UiManager.update(dt)
 end
 
 function UiManager.draw()
-
+    love.graphics.print("UI TEST",UiManager.screenCenterX,y)
 end
 
 function UiManager.keypressed(key)
+     --debug
     if key == "space" then
-        --SceneManager.changeScene("titleMenu")
-        UiManager.actualScene = "titleMenu"
+        for i = #UiManager.buttonsInScene,1,-1 do
+            local b = UiManager.buttonsInScene[i]
+            print(b.name.."/"..tostring(b.mouseOn))
+        end
+        --UiManager.actualScene = "gameplay"
     end
 end
 

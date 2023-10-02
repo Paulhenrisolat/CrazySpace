@@ -62,26 +62,6 @@ function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
     table.insert(Ennemy.ennemyList, newEnnemy)
 end
 
-function Ennemy.manager(dt)
-    for i=#Ennemy.ennemyInScene,1,-1 do 
-        local e = Ennemy.ennemyInScene[i]
-        local rotationTowardPlayer = math.angle(e.x, e.y, Player.x, Player.y)
-        e.rotation = rotationTowardPlayer
-        local vx = e.type.speed * math.cos(e.rotation) * dt
-        local vy = e.type.speed * math.sin(e.rotation) * dt
-        e.x = e.x + vx
-        e.y = e.y + vy
-        if math.dist(e.x,e.y,Player.x,Player.y) < 250 then
-            --local reload = e.reloadTime
-            e.reloadTime = e.reloadTime - 5*dt
-            if e.reloadTime <= 0 then
-                Shoot.shooting(e.x, e.y, e.rotation, e.type.projectileImage, e.type.projectileSpeed, e.type.damage, "ennemy")
-                e.reloadTime = 1
-            end
-        end 
-    end
-end
-
 function Ennemy.spawning(ennemySelected, nbEnnemy)
     if #Ennemy.ennemyInScene < nbEnnemy  then
     --get choosen ennemy in list to spawn
@@ -99,6 +79,26 @@ function Ennemy.spawning(ennemySelected, nbEnnemy)
                 table.insert(Ennemy.ennemyInScene, newEnnemyInScene)
             end
         end
+    end
+end
+
+function Ennemy.manager(dt)
+    for i=#Ennemy.ennemyInScene,1,-1 do 
+        local e = Ennemy.ennemyInScene[i]
+        local rotationTowardPlayer = math.angle(e.x, e.y, Player.x, Player.y)
+        e.rotation = rotationTowardPlayer
+        local vx = e.type.speed * math.cos(e.rotation) * dt
+        local vy = e.type.speed * math.sin(e.rotation) * dt
+        e.x = e.x + vx
+        e.y = e.y + vy
+        if math.dist(e.x,e.y,Player.x,Player.y) < 250 then
+            --local reload = e.reloadTime
+            e.reloadTime = e.reloadTime - 5*dt
+            if e.reloadTime <= 0 then
+                Shoot.shooting(e.x, e.y, e.rotation, e.type.projectileImage, e.type.projectileSpeed, e.type.damage, "ennemy")
+                e.reloadTime = 1
+            end
+        end 
     end
 end
 
@@ -120,6 +120,7 @@ function Ennemy.death()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         if e.HP <= 0 then
+            Player.money = Player.money + 2
             table.remove(Ennemy.ennemyInScene, i)
         end
     end
@@ -131,7 +132,7 @@ function Ennemy.load()
 end
 
 function Ennemy.update(dt)
-    Ennemy.spawning(weakling, 50)
+    Ennemy.spawning(weakling, 5)
     Ennemy.Scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()

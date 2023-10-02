@@ -14,11 +14,12 @@ Player.rotSpeed = 3
 Player.img = love.graphics.newImage("img/spaceshipv1.png")
 Player.radius = Player.img:getWidth()/2
 -- stats
-Player.life = 10
-Player.maxLife = 10
+Player.life = 0
+Player.maxLife = 100
 Player.damage = 5
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
+Player.money = 0
 
 -- If the distance of one object to the other is less than the sum of their radius(s) return true
 function math.checkCircularCollision(ax, ay, bx, by, ar, br)
@@ -29,28 +30,30 @@ function math.checkCircularCollision(ax, ay, bx, by, ar, br)
 end
 
 function Input(dt)
-  if love.keyboard.isDown("up","z") then    
-    local vx = Player.speed * math.cos(Player.rotation) * dt
-    local vy = Player.speed * math.sin(Player.rotation) * dt
-    --Player.x = Player.x + vx
-    --Player.y = Player.y + vy
-  end
-  if love.keyboard.isDown("down","s") then    
-    local vx = Player.speed * math.cos(Player.rotation) * dt
-    local vy = Player.speed * math.sin(Player.rotation) * dt
-    --Player.x = Player.x - vx
-    --Player.y = Player.y - vy
-  end
-  if love.keyboard.isDown("right","d") then
-    Player.rotation = Player.rotation + Player.rotSpeed * dt
-  end
-  if love.keyboard.isDown("left","q") then
-    Player.rotation = Player.rotation - Player.rotSpeed * dt
-  end
-  if love.keyboard.isDown("rshift","lshift") then
-    Player.actualSpeed = Player.runSpeed
-  else
-    Player.actualSpeed = Player.speed
+  if Player.life > 0 then
+    if love.keyboard.isDown("up","z") then    
+      local vx = Player.speed * math.cos(Player.rotation) * dt
+      local vy = Player.speed * math.sin(Player.rotation) * dt
+      --Player.x = Player.x + vx
+      --Player.y = Player.y + vy
+    end
+    if love.keyboard.isDown("down","s") then    
+      local vx = Player.speed * math.cos(Player.rotation) * dt
+      local vy = Player.speed * math.sin(Player.rotation) * dt
+      --Player.x = Player.x - vx
+      --Player.y = Player.y - vy
+    end
+    if love.keyboard.isDown("right","d") then
+      Player.rotation = Player.rotation + Player.rotSpeed * dt
+    end
+    if love.keyboard.isDown("left","q") then
+      Player.rotation = Player.rotation - Player.rotSpeed * dt
+    end
+    if love.keyboard.isDown("rshift","lshift") then
+      Player.actualSpeed = Player.runSpeed
+    else
+      Player.actualSpeed = Player.speed
+    end
   end
 end
 
@@ -58,7 +61,7 @@ function Player.collision()
   for i=#Shoot.projectiles,1,-1 do
     local b = Shoot.projectiles[i]
     if math.checkCircularCollision(Player.x, Player.y, b.x, b.y, Player.radius, b.radius) and b.team == "ennemy" then
-        print("take dmg !")
+        --print("take dmg !")
         Player.life = Player.life - b.damage
         table.remove(Shoot.projectiles, i)
     end
@@ -66,6 +69,7 @@ function Player.collision()
 end
 
 function Player.load()
+  Player.life = Player.maxLife
   Player.x = UiManager.screenCenterX
   Player.y = UiManager.screenCenterY
 end
@@ -80,13 +84,16 @@ end
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
   love.graphics.print("HP: "..Player.life.." / "..Player.maxLife)
+  love.graphics.print("Money: "..Player.money.." $",x,15)
   --debug
   love.graphics.circle("line", Player.x, Player.y, Player.radius)
 end
 
 function Player.keypressed(key)
-  if key == "space" then
-    Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
+  if Player.life > 0 then
+    if key == "space" then
+      Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
+    end
   end
 end
 

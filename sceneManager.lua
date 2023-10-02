@@ -4,6 +4,7 @@ local UiManager = require("uiManager")
 local TitleMenu = require("titleMenu")
 local PauseMenu = require("pauseMenu")
 local Gameplay = require("gameplay")
+local Option = require("option")
 
 SceneManager.actualScene = "noScene"
 
@@ -27,7 +28,6 @@ function SceneManager.changeScene()
         elseif s.sceneName ~= SceneManager.actualScene then
             s.isActive = false
         end
-        --print("Scenes Status ["..tostring(s.scene).."|"..s.sceneName.."|"..tostring(s.isActive).."]")
     end
 end
 
@@ -43,19 +43,18 @@ end
 function SceneManager.load()
     SceneManager.addScene("titleMenu")
     SceneManager.addScene("gameplay")
+    SceneManager.addScene("option")
 
     UiManager.load()
     TitleMenu.load()
     Gameplay.load()
+    Option.load()
 end
 
 function SceneManager.update(dt)
     SceneManager.changeScene()
     SceneManager.actualScene = UiManager.actualScene
-    
-    
     UiManager.update(dt)
-
     for i = #SceneManager.scenes,1,-1 do
         local s = SceneManager.scenes[i]
         if s.isActive == true then
@@ -73,10 +72,7 @@ end
 function SceneManager.keypressed(key)
     PauseMenu.keypressed(key)
     Gameplay.keypressed(key)
-    if key == "space" then
-        --SceneManager.changeScene("titleMenu")
-        --SceneManager.actualScene = "titleMenu"
-    end
+    UiManager.keypressed(key)
 end
 
 function SceneManager.mousepressed(x, y, button, istouch)

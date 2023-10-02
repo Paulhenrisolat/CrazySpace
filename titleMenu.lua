@@ -2,23 +2,12 @@ local TitleMenu = {}
 
 local UiManager = require("uiManager")
 
-TitleMenu.btnPlayX = UiManager.screenCenterX
-TitleMenu.btnPlayY = UiManager.screenCenterY
-
-TitleMenu.btnConfigX = UiManager.screenCenterX
-TitleMenu.btnConfigY = UiManager.screenCenterY + 50
-
-function TitleMenu.buttonPos(x,y)
-    local newBtnPos ={}
-    newBtnPos.x = x
-    newBtnPos.y = y
-    newBtnPos.isActive = false
-    table.insert(UiManager.buttonsInScene, newBtnPos)
-end
-
 function TitleMenu.load()
-    TitleMenu.buttonPos(TitleMenu.btnPlayX,TitleMenu.btnPlayY)
-    TitleMenu.buttonPos(TitleMenu.btnConfigX,TitleMenu.btnConfigY)
+    --1,2,3->play,option,exit
+    print("test")
+    UiManager.addButtton("gameplay", UiManager.screenCenterX,UiManager.screenCenterY)
+    UiManager.addButtton("option", UiManager.screenCenterX,UiManager.screenCenterY+50)
+    print(#UiManager.buttonsInScene)
 end
 
 function TitleMenu.update(dt)
@@ -28,10 +17,14 @@ end
 function TitleMenu.draw()
     love.graphics.print("TitleMenu",x,y)
     love.graphics.print("btn:"..#UiManager.buttons.." In scene:"..#UiManager.buttonsInScene.." Mouse Pos x:"..UiManager.mouseX.." y:"..UiManager.mouseY,x,15)
-    love.graphics.print("BTN index: "..UiManager.buttonSelected,x,30)
-    --1,2,3->play,config,exit
-    UiManager.addButton(1,TitleMenu.btnPlayX,TitleMenu.btnPlayY)
-    UiManager.addButton(2,TitleMenu.btnConfigX,TitleMenu.btnConfigY)
+    love.graphics.print("BTN Name :"..UiManager.buttonSelectedname,x,30)
+    --Add created
+    for i = #UiManager.buttonsInScene,1,-1 do
+        local b = UiManager.buttonsInScene[i]
+        if b.name =="gameplay" or b.name == "option" then
+            love.graphics.draw(b.img, b.x, b.y, 0,b.scaleW,b.scaleH, b.imgOX,b.imgOY)
+        end
+    end
 end
 
 function TitleMenu.keypressed(key)
