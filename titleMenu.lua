@@ -4,10 +4,9 @@ local UiManager = require("uiManager")
 
 function TitleMenu.load()
     --1,2,3->play,option,exit
-    print("test")
     UiManager.addButtton("gameplay", UiManager.screenCenterX,UiManager.screenCenterY)
     UiManager.addButtton("option", UiManager.screenCenterX,UiManager.screenCenterY+50)
-    print(#UiManager.buttonsInScene)
+    --print(#UiManager.buttonsInScene)
 end
 
 function TitleMenu.update(dt)

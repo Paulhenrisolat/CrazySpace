@@ -18,13 +18,13 @@ function deathManager.draw()
         love.graphics.print("Money Gained: "..Player.money,UiManager.screenCenterX-50,UiManager.screenCenterY-20)
         love.graphics.print("- Press Enter/Return -",UiManager.screenCenterX-50,UiManager.screenCenterY)
     end
-
 end
 
 function deathManager.keypressed(key)
     if key=="return" and Player.life <= 0 then
         print("death")
         UiManager.actualScene = "titleMenu"
+        Player.life = Player.maxLife
     end
 end
 

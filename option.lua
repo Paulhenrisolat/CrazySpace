@@ -22,4 +22,7 @@ function Option.draw()
     end
 end
 
+function Option.keypressed(key)
+end
+
 return Option

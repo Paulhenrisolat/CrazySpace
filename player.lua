@@ -2,6 +2,9 @@ local Player = {}
 
 local UiManager = require("uiManager")
 local Shoot = require("shoot")
+local SoundManager = require("soundManager")
+local DebugManager = require("debugManager")
+local Power = require("power")
 
 -- general info
 Player.x = 0
@@ -16,10 +19,11 @@ Player.radius = Player.img:getWidth()/2
 -- stats
 Player.life = 0
 Player.maxLife = 100
-Player.damage = 5
+Player.damage = 7
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
 Player.money = 0
+Player.kill = 0
 
 -- If the distance of one object to the other is less than the sum of their radius(s) return true
 function math.checkCircularCollision(ax, ay, bx, by, ar, br)
@@ -77,6 +81,7 @@ end
 function Player.update(dt)
   Input(dt)
   Player.collision()
+  Power.playerKill = Player.kill
   Shoot.playerSpeed = Player.actualSpeed
   Shoot.playerRotation = Player.rotation
 end
@@ -85,14 +90,19 @@ function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
   love.graphics.print("HP: "..Player.life.." / "..Player.maxLife)
   love.graphics.print("Money: "..Player.money.." $",x,15)
+  Power.draw()
   --debug
-  love.graphics.circle("line", Player.x, Player.y, Player.radius)
+  if DebugManager.debug == true then
+    love.graphics.circle("line", Player.x, Player.y, Player.radius)
+  end
 end
 
 function Player.keypressed(key)
   if Player.life > 0 then
     if key == "space" then
       Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
+      SoundManager.sounds.laserSound:stop()
+      SoundManager.sounds.laserSound:play()
     end
   end
 end

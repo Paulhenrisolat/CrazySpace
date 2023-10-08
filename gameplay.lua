@@ -5,21 +5,26 @@ local Player = require("player")
 local Ennemy = require("ennemy")
 local Shoot = require("shoot")
 local DeathManager = require("deathManager")
+local WinManager = require("winManager")
+local DebugManager = require("debugManager")
 
 Gameplay.bg = love.graphics.newImage("img/spaceia.jpg")
+Gameplay.mapWidth = Gameplay.bg:getWidth()
+Gameplay.mapHeight = Gameplay.bg:getHeight()
+Gameplay.bgOX = Gameplay.mapWidth/2
+Gameplay.bgOY = Gameplay.mapHeight/2
 Gameplay.bgX = 0
 Gameplay.bgY = 0
-Gameplay.bgOX = Gameplay.bg:getWidth()/2
-Gameplay.bgOY = Gameplay.bg:getHeight()/2
+
 
 function Gameplay.Scrolling(dt)
-    if love.keyboard.isDown("up","z") then    
+    if love.keyboard.isDown("up","z") and Player.life > 0 then    
         local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
         local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
         Gameplay.bgX = Gameplay.bgX - vx
         Gameplay.bgY = Gameplay.bgY - vy
     end
-    if love.keyboard.isDown("down","s") then    
+    if love.keyboard.isDown("down","s") and Player.life > 0 then    
         local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
         local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
         Gameplay.bgX = Gameplay.bgX + vx
@@ -38,6 +43,7 @@ function Gameplay.update(dt)
     Player.update(dt)
     Ennemy.update(dt)
     Shoot.update(dt)
+    WinManager.update(dt)
     Gameplay.Scrolling(dt)
 end
 
@@ -47,13 +53,17 @@ function Gameplay.draw()
     Ennemy.draw()
     Shoot.draw()
     DeathManager.draw()
+    WinManager.draw()
     --debug
-    love.graphics.print("Projectiles: "..#Shoot.projectiles,x,45)
+    if DebugManager.debug == true then
+        love.graphics.print("Projectiles: "..#Shoot.projectiles,x,45)
+    end
 end
 
 function Gameplay.keypressed(key)
     Player.keypressed(key)
     DeathManager.keypressed(key)
+    WinManager.keypressed(key)
 end
 
 return Gameplay

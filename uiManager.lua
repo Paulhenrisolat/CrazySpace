@@ -1,5 +1,6 @@
 local UiManager = {}
 
+local SoundManager = require("soundManager")
 UiManager.buttons = {}
 UiManager.buttonsInScene = {}
 
@@ -48,7 +49,7 @@ function UiManager.addButtton(btnName, x,y)
     end
 end
 
-function UiManager.mouseOnButton()
+function UiManager.mouseOnButton(dt)
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
 
@@ -58,17 +59,19 @@ function UiManager.mouseOnButton()
             UiManager.buttonSelectedname = b.name
             b.scaleW = 2
             b.scaleH = 2
-            --print(b.name.."/"..tostring(b.mouseOn))
+            UiManager.buttonsSound = true
         else
             b.mouseOn = false
             b.scaleW = 1
             b.scaleH = 1
         end
+
     end
 end
 
 function UiManager.mousepressed(x, y, button, istouch)
     if button == 1 then
+        --SoundManager.sounds.buttonSound:play()
         UiManager.buttonAction()
     end
 end
@@ -99,7 +102,7 @@ end
 function UiManager.update(dt)
     UiManager.mouseX = love.mouse.getX()
     UiManager.mouseY = love.mouse.getY()
-    UiManager.mouseOnButton()
+    UiManager.mouseOnButton(dt)
 end
 
 function UiManager.draw()
@@ -107,11 +110,11 @@ function UiManager.draw()
 end
 
 function UiManager.keypressed(key)
-     --debug
+    --debug
     if key == "space" then
         for i = #UiManager.buttonsInScene,1,-1 do
             local b = UiManager.buttonsInScene[i]
-            print(b.name.."/"..tostring(b.mouseOn))
+            --print(b.name.."/"..tostring(b.mouseOn))
         end
         --UiManager.actualScene = "gameplay"
     end

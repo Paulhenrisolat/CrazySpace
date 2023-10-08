@@ -3,9 +3,14 @@ local Ennemy = {}
 local UiManager = require("uiManager")
 local Player = require("player")
 local Shoot = require("shoot")
+local SoundManager = require("soundManager")
+local DebugManager = require("debugManager")
+local HealingDrone = require("healingDrone")
 
-Ennemy.mapWidth = nill
-Ennemy.mapHeight = nill
+Ennemy.mapWidth = 0
+Ennemy.mapHeight = 0
+
+Ennemy.startPartie = false
 
 Ennemy.ennemyList = {}
 Ennemy.ennemyInScene = {}
@@ -31,13 +36,13 @@ end
 function Ennemy.Scrolling(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
-        if love.keyboard.isDown("up","z") then    
+        if love.keyboard.isDown("up","z") and Player.life > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x - vx
             e.y = e.y - vy
         end
-        if love.keyboard.isDown("down","s") then    
+        if love.keyboard.isDown("down","s") and Player.life > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x + vx
@@ -63,9 +68,9 @@ function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
 end
 
 function Ennemy.spawning(ennemySelected, nbEnnemy)
-    if #Ennemy.ennemyInScene < nbEnnemy  then
-    --get choosen ennemy in list to spawn
-        for i=#Ennemy.ennemyList,1,-1 do 
+    for i=#Ennemy.ennemyList,1,-1 do 
+        if #Ennemy.ennemyInScene < nbEnnemy and Ennemy.startPartie == true then
+            --get choosen ennemy in list to spawn
             local e = Ennemy.ennemyList[i]
             if e.name == tostring(ennemySelected) then
                 local newEnnemyInScene = {}
@@ -78,6 +83,8 @@ function Ennemy.spawning(ennemySelected, nbEnnemy)
                 newEnnemyInScene.reloadTime = e.reloadTime
                 table.insert(Ennemy.ennemyInScene, newEnnemyInScene)
             end
+        elseif #Ennemy.ennemyInScene >= nbEnnemy then
+            Ennemy.startPartie = false
         end
     end
 end
@@ -85,18 +92,37 @@ end
 function Ennemy.manager(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do 
         local e = Ennemy.ennemyInScene[i]
-        local rotationTowardPlayer = math.angle(e.x, e.y, Player.x, Player.y)
-        e.rotation = rotationTowardPlayer
-        local vx = e.type.speed * math.cos(e.rotation) * dt
-        local vy = e.type.speed * math.sin(e.rotation) * dt
-        e.x = e.x + vx
-        e.y = e.y + vy
-        if math.dist(e.x,e.y,Player.x,Player.y) < 250 then
-            --local reload = e.reloadTime
-            e.reloadTime = e.reloadTime - 5*dt
-            if e.reloadTime <= 0 then
-                Shoot.shooting(e.x, e.y, e.rotation, e.type.projectileImage, e.type.projectileSpeed, e.type.damage, "ennemy")
-                e.reloadTime = 1
+        if e.HP < e.maxHP/2 then 
+            --rotate to healing drone
+            for i=#HealingDrone.healdronesInScene,1,-1 do
+                local h = HealingDrone.healdronesInScene[i]
+                local rotationTowardHealingDrone = math.angle(e.x, e.y, h.x, h.y)
+                e.rotation = rotationTowardHealingDrone
+                --go to healing drone
+                local vx = e.type.speed * math.cos(e.rotation) * dt
+                local vy = e.type.speed * math.sin(e.rotation) * dt
+                e.x = e.x + vx
+                e.y = e.y + vy
+            end
+        else
+            --rotate to player
+            local rotationTowardPlayer = math.angle(e.x, e.y, Player.x, Player.y)
+            e.rotation = rotationTowardPlayer
+            --follow player
+            local vx = e.type.speed * math.cos(e.rotation) * dt
+            local vy = e.type.speed * math.sin(e.rotation) * dt
+            e.x = e.x + vx
+            e.y = e.y + vy
+            --Shoot player
+            if math.dist(e.x,e.y,Player.x,Player.y) < 250 then
+                --local reload = e.reloadTime
+                e.reloadTime = e.reloadTime - 5*dt
+                if e.reloadTime <= 0 then
+                    Shoot.shooting(e.x, e.y, e.rotation, e.type.projectileImage, e.type.projectileSpeed, e.type.damage, "ennemy")
+                    SoundManager.sounds.laserESound:stop()
+                    SoundManager.sounds.laserESound:play()
+                    e.reloadTime = 1
+                end
             end
         end 
     end
@@ -108,7 +134,7 @@ function Ennemy.collision()
         for a=#Shoot.projectiles,1,-1 do
             local b = Shoot.projectiles[a]
             if math.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
-                print("Hit !")
+                --print("Hit !")
                 e.HP = e.HP - b.damage
                 table.remove(Shoot.projectiles, a)
             end
@@ -127,12 +153,17 @@ function Ennemy.death()
 end
 
 function Ennemy.load()
+    HealingDrone.load()
+    Ennemy.startPartie = true
     --Create ennemy : name,img,ballimg,life,speed,dmg,reloadtime
-    Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 5)
+    Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 1)
+    --Ennemy.addEnnemy(healingDrone, "img/ennemy2.png", "img/balle.png",  120, 0, 0, 0)
 end
 
 function Ennemy.update(dt)
+    HealingDrone.update(dt)
     Ennemy.spawning(weakling, 5)
+    --Ennemy.spawning(healingDrone, 1)
     Ennemy.Scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()
@@ -140,17 +171,21 @@ function Ennemy.update(dt)
 end
 
 function Ennemy.draw()
+    HealingDrone.draw()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         love.graphics.draw(e.type.img,e.x,e.y,e.rotation,1,1,e.type.ox,e.type.oy)
         love.graphics.print("id: "..i.." HP: "..e.maxHP.."/"..e.HP,e.x,e.y-30)
     end
     --debug
-    love.graphics.print("Spawning: "..tostring(Ennemy.partieStart).." EnnemySpawned: "..#Ennemy.ennemyInScene,x,30)
-    for i=#Ennemy.ennemyInScene,1,-1 do
-        local e = Ennemy.ennemyInScene[i]
-        love.graphics.print("ennemy["..i.."]".."x :"..math.floor(e.x).." y:"..math.floor(e.y),x,45 + i * 10)
-        love.graphics.circle("line", e.x, e.y, e.radius)
+    if DebugManager.debug == true then
+        love.graphics.print("Spawning: "..tostring(Ennemy.partieStart).." EnnemySpawned: "..#Ennemy.ennemyInScene,x,30)
+        love.graphics.print("HealingDrone: "..tostring(#HealingDrone.healdronesInScene),210,30)
+        for i=#Ennemy.ennemyInScene,1,-1 do
+            local e = Ennemy.ennemyInScene[i]
+            love.graphics.print("ennemy["..i.."]".."x :"..math.floor(e.x).." y:"..math.floor(e.y),x,45 + i * 10)
+            love.graphics.circle("line", e.x, e.y, e.radius)
+        end
     end
 end
 
