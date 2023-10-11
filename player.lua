@@ -12,14 +12,14 @@ Player.y = 0
 Player.rotation = math.rad(-90)
 Player.speed = 180
 Player.actualSpeed = Player.speed
-Player.runSpeed = 500--300
+Player.runSpeed = 500
 Player.rotSpeed = 3
 Player.img = love.graphics.newImage("img/spaceshipv1.png")
 Player.radius = Player.img:getWidth()/2
 -- stats
 Player.life = 0
-Player.maxLife = 100
-Player.damage = 7
+Player.maxLife = 1000
+Player.damage = 9
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
 Player.money = 0
@@ -82,6 +82,7 @@ function Player.update(dt)
   Input(dt)
   Player.collision()
   Power.playerKill = Player.kill
+  Power.update(dt)
   Shoot.playerSpeed = Player.actualSpeed
   Shoot.playerRotation = Player.rotation
 end
@@ -89,7 +90,7 @@ end
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
   love.graphics.print("HP: "..Player.life.." / "..Player.maxLife)
-  love.graphics.print("Money: "..Player.money.." $",x,15)
+  love.graphics.print("Kill: "..Player.kill.."Money: "..Player.money.." $",x,15)
   Power.draw()
   --debug
   if DebugManager.debug == true then
@@ -98,13 +99,18 @@ function Player.draw()
 end
 
 function Player.keypressed(key)
-  if Player.life > 0 then
-    if key == "space" then
+  if key == "space" then
+    if Player.life > 0 then
       Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
       SoundManager.sounds.laserSound:stop()
       SoundManager.sounds.laserSound:play()
     end
   end
+  if key == "return" and Power.jaugeCount >= 7 then
+    Player.kill = 0
+    Power.jaugeCount = 0
+  end
+  
 end
 
 return Player

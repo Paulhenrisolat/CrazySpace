@@ -6,6 +6,8 @@ local Shoot = require("shoot")
 local SoundManager = require("soundManager")
 local DebugManager = require("debugManager")
 local HealingDrone = require("healingDrone")
+local Explosion = require("explosion")
+local Drop = require("drop")
 
 Ennemy.mapWidth = 0
 Ennemy.mapHeight = 0
@@ -14,6 +16,9 @@ Ennemy.startPartie = false
 
 Ennemy.ennemyList = {}
 Ennemy.ennemyInScene = {}
+
+Ennemy.healAmount = 1
+Ennemy.healCooldown = 5
 
 -- Returns the distance between two points.
 function math.dist(x1,y1, x2,y2) 
@@ -94,8 +99,8 @@ function Ennemy.manager(dt)
         local e = Ennemy.ennemyInScene[i]
         if e.HP < e.maxHP/2 then 
             --rotate to healing drone
-            for i=#HealingDrone.healdronesInScene,1,-1 do
-                local h = HealingDrone.healdronesInScene[i]
+            for hi=#HealingDrone.healdronesInScene,1,-1 do
+                local h = HealingDrone.healdronesInScene[hi]
                 local rotationTowardHealingDrone = math.angle(e.x, e.y, h.x, h.y)
                 e.rotation = rotationTowardHealingDrone
                 --go to healing drone
@@ -103,6 +108,11 @@ function Ennemy.manager(dt)
                 local vy = e.type.speed * math.sin(e.rotation) * dt
                 e.x = e.x + vx
                 e.y = e.y + vy
+                --Heal the ennemy
+                if math.checkCircularCollision(e.x, e.y, h.x, h.y, e.radius, h.radius) then
+                    --print("heal :"..i)
+                    Ennemy.heal(e, dt)
+                end
             end
         else
             --rotate to player
@@ -142,11 +152,25 @@ function Ennemy.collision()
     end
 end
 
+function Ennemy.heal(ennemy, dt)
+    Ennemy.healCooldown = Ennemy.healCooldown - dt
+    --print(timer)
+    if Ennemy.healCooldown <= 0 then
+        ennemy.HP = ennemy.HP + Ennemy.healAmount 
+        local leftoverTimer = math.abs(Ennemy.healCooldown)
+        --timer = 1 - leftoverTimer
+        print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
+    end
+end
+
 function Ennemy.death()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         if e.HP <= 0 then
+            Explosion.addExplosionToScene(e.x,e.y)
+            Drop.addDropToScene(e.x,e.y)
             Player.money = Player.money + 2
+            Player.kill = Player.kill + 1
             table.remove(Ennemy.ennemyInScene, i)
         end
     end
@@ -157,13 +181,11 @@ function Ennemy.load()
     Ennemy.startPartie = true
     --Create ennemy : name,img,ballimg,life,speed,dmg,reloadtime
     Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 1)
-    --Ennemy.addEnnemy(healingDrone, "img/ennemy2.png", "img/balle.png",  120, 0, 0, 0)
 end
 
 function Ennemy.update(dt)
     HealingDrone.update(dt)
-    Ennemy.spawning(weakling, 5)
-    --Ennemy.spawning(healingDrone, 1)
+    Ennemy.spawning(weakling, 10)
     Ennemy.Scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()

@@ -20,8 +20,13 @@ function SoundManager.musicManager()
     end
 end
 
-function SoundManager.load()
+function SoundManager.getVolume(sound)
+    local volume = sound:getVolume()
+    return volume
+end
 
+function SoundManager.load()
+    SoundManager.sounds.laserESound:setVolume(0.1)
 end
 
 function SoundManager.update(dt)
@@ -31,6 +36,17 @@ end
 function SoundManager.draw()
     --Debug
     love.graphics.print("MusicScene: "..SoundManager.actualScene,x,700)
+end
+
+function SoundManager.keypressed(key)
+    if key == "kp+" and SoundManager.getVolume(SoundManager.sounds.gameplayMusic) < 1 then
+        --print("Volume: "..SoundManager.getVolume(SoundManager.sounds.gameplayMusic))
+        SoundManager.sounds.gameplayMusic:setVolume(SoundManager.getVolume(SoundManager.sounds.gameplayMusic)+0.1)
+    end
+    if key == "kp-" and SoundManager.getVolume(SoundManager.sounds.gameplayMusic) > 0 then
+        --print("Volume: "..SoundManager.getVolume(SoundManager.sounds.gameplayMusic))
+        SoundManager.sounds.gameplayMusic:setVolume(SoundManager.getVolume(SoundManager.sounds.gameplayMusic)-0.1)
+    end
 end
 
 return SoundManager

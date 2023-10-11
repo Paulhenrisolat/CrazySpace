@@ -85,11 +85,9 @@ function SceneManager.keypressed(key)
             s.scene.keypressed(key)
         end
     end
+    SoundManager.keypressed(key)
     --debug
     DebugManager.keypressed(key)
-    --PauseMenu.keypressed(key)
-    --Gameplay.keypressed(key)
-    --UiManager.keypressed(key)
 end
 
 function SceneManager.mousepressed(x, y, button, istouch)

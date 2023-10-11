@@ -55,7 +55,7 @@ function HealingDrone.draw()
     for i=#HealingDrone.healdronesInScene,1,-1 do
         local h = HealingDrone.healdronesInScene[i]
         love.graphics.draw(h.img,h.x,h.y,0,1,1,h.imgOX,h.imgOY)
-        love.graphics.print("id: "..h.name.." HP: "..h.maxHP.."/"..h.HP,h.x,h.y-30)
+        --love.graphics.print("id: "..h.name.." HP: "..h.maxHP.."/"..h.HP,h.x,h.y-30)
         if DebugManager.debug == true then
             love.graphics.circle("line", h.x, h.y, h.radius)
         end

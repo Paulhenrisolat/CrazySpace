@@ -5,8 +5,12 @@ local Ennemy = require("ennemy")
 local Player = require("player")
 
 WinManager.gameIsWon = false
+WinManager.img = love.graphics.newImage("img/win.png")
 WinManager.imgX = UiManager.screenCenterX
 WinManager.imgY = UiManager.screenCenterY
+WinManager.imgOX = WinManager.img:getWidth()/2
+WinManager.imgOY = WinManager.img:getHeight()/2
+
 
 function WinManager.win()
     if Player.life > 0 and #Ennemy.ennemyInScene == 0 then
@@ -23,8 +27,9 @@ end
 
 function WinManager.draw()
     if WinManager.gameIsWon == true then
+        love.graphics.draw(WinManager.img,UiManager.screenCenterX,UiManager.screenCenterY,0,2,2,WinManager.imgOX,WinManager.imgOY)
         love.graphics.print("You WIN !",WinManager.imgX,WinManager.imgY)
-        love.graphics.print("- Press Enter/Return -",WinManager.imgX,WinManager.imgY+30)
+        love.graphics.print("- Press Enter/Return -",WinManager.imgX-30,WinManager.imgY+30)
     end
 end
 
