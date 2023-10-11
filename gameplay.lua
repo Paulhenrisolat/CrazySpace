@@ -19,13 +19,13 @@ Gameplay.bgX = 0
 Gameplay.bgY = 0
 
 function Gameplay.Scrolling(dt)
-    if love.keyboard.isDown("up","z") and Player.life > 0 then    
+    if love.keyboard.isDown("up","z") and Player.HP > 0 then    
         local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
         local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
         Gameplay.bgX = Gameplay.bgX - vx
         Gameplay.bgY = Gameplay.bgY - vy
     end
-    if love.keyboard.isDown("down","s") and Player.life > 0 then    
+    if love.keyboard.isDown("down","s") and Player.HP > 0 then    
         local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
         local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
         Gameplay.bgX = Gameplay.bgX + vx

@@ -41,13 +41,13 @@ end
 function Ennemy.Scrolling(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
-        if love.keyboard.isDown("up","z") and Player.life > 0 then    
+        if love.keyboard.isDown("up","z") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x - vx
             e.y = e.y - vy
         end
-        if love.keyboard.isDown("down","s") and Player.life > 0 then    
+        if love.keyboard.isDown("down","s") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x + vx
@@ -86,6 +86,8 @@ function Ennemy.spawning(ennemySelected, nbEnnemy)
                 newEnnemyInScene.maxHP = e.life
                 newEnnemyInScene.HP = e.life
                 newEnnemyInScene.reloadTime = e.reloadTime
+                newEnnemyInScene.healAmount = Ennemy.healAmount
+                newEnnemyInScene.healCooldown = Ennemy.healCooldown
                 table.insert(Ennemy.ennemyInScene, newEnnemyInScene)
             end
         elseif #Ennemy.ennemyInScene >= nbEnnemy then
@@ -97,7 +99,7 @@ end
 function Ennemy.manager(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do 
         local e = Ennemy.ennemyInScene[i]
-        if e.HP < e.maxHP/2 then 
+        if e.HP < e.maxHP/2 and e.HP > 0 then 
             --rotate to healing drone
             for hi=#HealingDrone.healdronesInScene,1,-1 do
                 local h = HealingDrone.healdronesInScene[hi]
@@ -141,24 +143,26 @@ end
 function Ennemy.collision()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
-        for a=#Shoot.projectiles,1,-1 do
-            local b = Shoot.projectiles[a]
-            if math.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
-                --print("Hit !")
-                e.HP = e.HP - b.damage
-                table.remove(Shoot.projectiles, a)
+        if e.HP > 0 then
+            for a=#Shoot.projectiles,1,-1 do
+                local b = Shoot.projectiles[a]
+                if math.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
+                    --print("Hit !")
+                    e.HP = e.HP - b.damage
+                    table.remove(Shoot.projectiles, a)
+                end
             end
         end
     end
 end
 
 function Ennemy.heal(ennemy, dt)
-    Ennemy.healCooldown = Ennemy.healCooldown - dt
+    ennemy.healCooldown = ennemy.healCooldown - 1 * dt
     --print(timer)
-    if Ennemy.healCooldown <= 0 then
-        ennemy.HP = ennemy.HP + Ennemy.healAmount 
-        local leftoverTimer = math.abs(Ennemy.healCooldown)
-        --timer = 1 - leftoverTimer
+    if ennemy.healCooldown <= 0 then
+        ennemy.HP = ennemy.HP + ennemy.healAmount 
+        --local leftoverTimer = math.abs(ennemy.healCooldown)
+        ennemy.healCooldown = Ennemy.healCooldown
         print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
     end
 end

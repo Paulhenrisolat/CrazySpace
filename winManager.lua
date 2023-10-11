@@ -13,7 +13,7 @@ WinManager.imgOY = WinManager.img:getHeight()/2
 
 
 function WinManager.win()
-    if Player.life > 0 and #Ennemy.ennemyInScene == 0 then
+    if Player.HP > 0 and #Ennemy.ennemyInScene == 0 then
         WinManager.gameIsWon = true
     end
 end
@@ -36,7 +36,7 @@ end
 function WinManager.keypressed(key)
     if key=="return" and WinManager.gameIsWon == true then
         UiManager.actualScene = "titleMenu"
-        Player.life = Player.maxLife
+        Player.HP = Player.maxHP
         WinManager.gameIsWon = false
     end
 end

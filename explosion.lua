@@ -12,13 +12,13 @@ Explosion.explosionInScene = {}
 function Explosion.Scrolling(dt)
     for i=#Explosion.explosionInScene,1,-1 do
         local e = Explosion.explosionInScene[i]
-        if love.keyboard.isDown("up","z") and Player.life > 0 then    
+        if love.keyboard.isDown("up","z") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x - vx
             e.y = e.y - vy
         end
-        if love.keyboard.isDown("down","s") and Player.life > 0 then    
+        if love.keyboard.isDown("down","s") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             e.x = e.x + vx

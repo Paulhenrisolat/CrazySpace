@@ -12,13 +12,13 @@ HealingDrone.healdronesInScene = {}
 function HealingDrone.Scrolling(dt)
     for i=#HealingDrone.healdronesInScene,1,-1 do
         local h = HealingDrone.healdronesInScene[i]
-        if love.keyboard.isDown("up","z") and Player.life > 0 then    
+        if love.keyboard.isDown("up","z") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             h.x = h.x - vx
             h.y = h.y - vy
         end
-        if love.keyboard.isDown("down","s") and Player.life > 0 then    
+        if love.keyboard.isDown("down","s") and Player.HP > 0 then    
             local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
             local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
             h.x = h.x + vx

@@ -17,8 +17,8 @@ Player.rotSpeed = 3
 Player.img = love.graphics.newImage("img/spaceshipv1.png")
 Player.radius = Player.img:getWidth()/2
 -- stats
-Player.life = 0
-Player.maxLife = 1000
+Player.HP = 0
+Player.maxHP = 1000
 Player.damage = 9
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
@@ -34,7 +34,7 @@ function math.checkCircularCollision(ax, ay, bx, by, ar, br)
 end
 
 function Input(dt)
-  if Player.life > 0 then
+  if Player.HP > 0 then
     if love.keyboard.isDown("up","z") then    
       local vx = Player.speed * math.cos(Player.rotation) * dt
       local vy = Player.speed * math.sin(Player.rotation) * dt
@@ -66,14 +66,14 @@ function Player.collision()
     local b = Shoot.projectiles[i]
     if math.checkCircularCollision(Player.x, Player.y, b.x, b.y, Player.radius, b.radius) and b.team == "ennemy" then
         --print("take dmg !")
-        Player.life = Player.life - b.damage
+        Player.HP = Player.HP - b.damage
         table.remove(Shoot.projectiles, i)
     end
   end     
 end
 
 function Player.load()
-  Player.life = Player.maxLife
+  Player.HP = Player.maxHP
   Player.x = UiManager.screenCenterX
   Player.y = UiManager.screenCenterY
 end
@@ -89,7 +89,7 @@ end
 
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
-  love.graphics.print("HP: "..Player.life.." / "..Player.maxLife)
+  love.graphics.print("HP: "..Player.HP.." / "..Player.maxHP)
   love.graphics.print("Kill: "..Player.kill.."Money: "..Player.money.." $",x,15)
   Power.draw()
   --debug
@@ -100,7 +100,7 @@ end
 
 function Player.keypressed(key)
   if key == "space" then
-    if Player.life > 0 then
+    if Player.HP > 0 then
       Shoot.shooting(Player.x, Player.y, Player.rotation, Player.projectileImage, Player.projectileSpeed, Player.damage, "player")
       SoundManager.sounds.laserSound:stop()
       SoundManager.sounds.laserSound:play()

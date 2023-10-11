@@ -12,7 +12,7 @@ function deathManager.load()
 end
 
 function deathManager.draw()
-    if Player.life <= 0 then
+    if Player.HP <= 0 then
         love.graphics.draw(deathManager.img,UiManager.screenCenterX,UiManager.screenCenterY,0,2,2,deathManager.imgOX,deathManager.imgOY)
         love.graphics.print("GameOver",UiManager.screenCenterX-50,UiManager.screenCenterY-40)
         love.graphics.print("Money Gained: "..Player.money,UiManager.screenCenterX-50,UiManager.screenCenterY-20)
@@ -21,10 +21,10 @@ function deathManager.draw()
 end
 
 function deathManager.keypressed(key)
-    if key=="return" and Player.life <= 0 then
+    if key=="return" and Player.HP <= 0 then
         print("death")
         UiManager.actualScene = "titleMenu"
-        Player.life = Player.maxLife
+        Player.HP = Player.maxHP
     end
 end
 
