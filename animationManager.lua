@@ -1,0 +1,5 @@
+local AnimationManager = {}
+
+
+
+return AnimationManager

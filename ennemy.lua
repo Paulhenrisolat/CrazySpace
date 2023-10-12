@@ -1,5 +1,6 @@
 local Ennemy = {}
 
+local MathManager = require("mathManager")
 local UiManager = require("uiManager")
 local Player = require("player")
 local Shoot = require("shoot")
@@ -18,25 +19,7 @@ Ennemy.ennemyList = {}
 Ennemy.ennemyInScene = {}
 
 Ennemy.healAmount = 1
-Ennemy.healCooldown = 5
-
--- Returns the distance between two points.
-function math.dist(x1,y1, x2,y2) 
-    return ((x2-x1)^2+(y2-y1)^2)^0.5 
-end  
-
--- Returns the angle between two vectors assuming the same origin.
-function math.angle(x1,y1, x2,y2) 
-    return math.atan2(y2-y1, x2-x1) 
-end
-
--- If the distance of one object to the other is less than the sum of their radius(s) return true
-function math.checkCircularCollision(ax, ay, bx, by, ar, br)
-	local dx = bx - ax
-	local dy = by - ay
-	local dist = math.sqrt(dx * dx + dy * dy)
-	return dist < ar + br
-end
+Ennemy.healCooldown = 3
 
 function Ennemy.Scrolling(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do
@@ -103,7 +86,7 @@ function Ennemy.manager(dt)
             --rotate to healing drone
             for hi=#HealingDrone.healdronesInScene,1,-1 do
                 local h = HealingDrone.healdronesInScene[hi]
-                local rotationTowardHealingDrone = math.angle(e.x, e.y, h.x, h.y)
+                local rotationTowardHealingDrone = MathManager.angle(e.x, e.y, h.x, h.y)
                 e.rotation = rotationTowardHealingDrone
                 --go to healing drone
                 local vx = e.type.speed * math.cos(e.rotation) * dt
@@ -111,14 +94,14 @@ function Ennemy.manager(dt)
                 e.x = e.x + vx
                 e.y = e.y + vy
                 --Heal the ennemy
-                if math.checkCircularCollision(e.x, e.y, h.x, h.y, e.radius, h.radius) then
+                if MathManager.checkCircularCollision(e.x, e.y, h.x, h.y, e.radius, h.radius) then
                     --print("heal :"..i)
                     Ennemy.heal(e, dt)
                 end
             end
-        else
+        elseif Player.isDead == false then
             --rotate to player
-            local rotationTowardPlayer = math.angle(e.x, e.y, Player.x, Player.y)
+            local rotationTowardPlayer = MathManager.angle(e.x, e.y, Player.x, Player.y)
             e.rotation = rotationTowardPlayer
             --follow player
             local vx = e.type.speed * math.cos(e.rotation) * dt
@@ -126,7 +109,7 @@ function Ennemy.manager(dt)
             e.x = e.x + vx
             e.y = e.y + vy
             --Shoot player
-            if math.dist(e.x,e.y,Player.x,Player.y) < 250 then
+            if MathManager.dist(e.x,e.y,Player.x,Player.y) < 250 then
                 --local reload = e.reloadTime
                 e.reloadTime = e.reloadTime - 5*dt
                 if e.reloadTime <= 0 then
@@ -146,7 +129,7 @@ function Ennemy.collision()
         if e.HP > 0 then
             for a=#Shoot.projectiles,1,-1 do
                 local b = Shoot.projectiles[a]
-                if math.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
+                if MathManager.checkCircularCollision(e.x, e.y, b.x, b.y, e.radius, b.radius) and b.team == "player" then
                     --print("Hit !")
                     e.HP = e.HP - b.damage
                     table.remove(Shoot.projectiles, a)
@@ -160,8 +143,7 @@ function Ennemy.heal(ennemy, dt)
     ennemy.healCooldown = ennemy.healCooldown - 1 * dt
     --print(timer)
     if ennemy.healCooldown <= 0 then
-        ennemy.HP = ennemy.HP + ennemy.healAmount 
-        --local leftoverTimer = math.abs(ennemy.healCooldown)
+        ennemy.HP = ennemy.HP + ennemy.healAmount
         ennemy.healCooldown = Ennemy.healCooldown
         print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
     end
@@ -171,6 +153,8 @@ function Ennemy.death()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         if e.HP <= 0 then
+            SoundManager.sounds.explosionSound:stop()
+            SoundManager.sounds.explosionSound:play()
             Explosion.addExplosionToScene(e.x,e.y)
             Drop.addDropToScene(e.x,e.y)
             Player.money = Player.money + 2

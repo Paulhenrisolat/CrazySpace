@@ -51,6 +51,7 @@ function SceneManager.load()
     TitleMenu.load()
     Gameplay.load()
     Option.load()
+    PauseMenu.load()
     SoundManager.load()
 end
 
@@ -60,10 +61,12 @@ function SceneManager.update(dt)
     SoundManager.actualScene = SceneManager.actualScene
     UiManager.update(dt)
     SoundManager.update(dt)
-    for i = #SceneManager.scenes,1,-1 do
-        local s = SceneManager.scenes[i]
-        if s.isActive == true then
-            s.scene.update(dt)
+    if PauseMenu.isPaused == false then
+        for i = #SceneManager.scenes,1,-1 do
+            local s = SceneManager.scenes[i]
+            if s.isActive == true then
+                s.scene.update(dt)
+            end
         end
     end
 end
@@ -74,6 +77,9 @@ function SceneManager.draw()
     if DebugManager.debug == true then
         SoundManager.draw()
         DebugManager.draw()
+    end
+    if PauseMenu.isPaused == true then
+        PauseMenu.draw()
     end
     love.graphics.print("Scene: "..SceneManager.actualScene, UiManager.screenW-150, UiManager.screenH-30)
 end
@@ -86,6 +92,7 @@ function SceneManager.keypressed(key)
         end
     end
     SoundManager.keypressed(key)
+    PauseMenu.keypressed(key)
     --debug
     DebugManager.keypressed(key)
 end

@@ -38,6 +38,7 @@ function Gameplay.load()
     Ennemy.mapHeight = Gameplay.bg:getHeight()
     Player.load()
     Ennemy.load()
+    Explosion.load()
 end
 
 function Gameplay.update(dt)

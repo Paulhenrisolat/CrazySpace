@@ -1,5 +1,6 @@
 local Player = {}
 
+local MathManager = require("mathManager")
 local UiManager = require("uiManager")
 local Shoot = require("shoot")
 local SoundManager = require("soundManager")
@@ -18,20 +19,14 @@ Player.img = love.graphics.newImage("img/spaceshipv1.png")
 Player.radius = Player.img:getWidth()/2
 -- stats
 Player.HP = 0
-Player.maxHP = 1000
+Player.maxHP = 100
 Player.damage = 9
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
 Player.money = 0
 Player.kill = 0
-
--- If the distance of one object to the other is less than the sum of their radius(s) return true
-function math.checkCircularCollision(ax, ay, bx, by, ar, br)
-	local dx = bx - ax
-	local dy = by - ay
-	local dist = math.sqrt(dx * dx + dy * dy)
-	return dist < ar + br
-end
+Player.isDead = false
+Player.luck = 5 --higher mean less chance to drop item
 
 function Input(dt)
   if Player.HP > 0 then
@@ -64,12 +59,22 @@ end
 function Player.collision()
   for i=#Shoot.projectiles,1,-1 do
     local b = Shoot.projectiles[i]
-    if math.checkCircularCollision(Player.x, Player.y, b.x, b.y, Player.radius, b.radius) and b.team == "ennemy" then
+    if MathManager.checkCircularCollision(Player.x, Player.y, b.x, b.y, Player.radius, b.radius) and b.team == "ennemy" then
         --print("take dmg !")
+        SoundManager.sounds.hurtSound:stop()
+        SoundManager.sounds.hurtSound:play()
         Player.HP = Player.HP - b.damage
         table.remove(Shoot.projectiles, i)
     end
   end     
+end
+
+function Player.manager()
+  if Player.HP <= 0 and Player.isDead == false then
+    --SoundManager.sounds.looseSound:stop()
+    SoundManager.sounds.looseSound:play()
+    Player.isDead = true
+  end
 end
 
 function Player.load()
@@ -85,6 +90,7 @@ function Player.update(dt)
   Power.update(dt)
   Shoot.playerSpeed = Player.actualSpeed
   Shoot.playerRotation = Player.rotation
+  Player.manager()
 end
 
 function Player.draw()
@@ -110,7 +116,6 @@ function Player.keypressed(key)
     Player.kill = 0
     Power.jaugeCount = 0
   end
-  
 end
 
 return Player

@@ -1,7 +1,9 @@
 local Drop = {}
 
+local MathManager = require("mathManager")
 local Player = require("player")
 local DebugManager = require("debugManager")
+local SoundManager = require("soundManager")
 
 Drop.healImg = love.graphics.newImage("img/healdrop.png")
 Drop.healImgOX = Drop.healImg:getWidth()/2
@@ -12,14 +14,6 @@ Drop.healAmount = 10
 Drop.dropInScene = {}
 Drop.lifeTime = 5
 Drop.canDrop = false
-
--- If the distance of one object to the other is less than the sum of their radius(s) return true
-function math.checkCircularCollision(ax, ay, bx, by, ar, br)
-	local dx = bx - ax
-	local dy = by - ay
-	local dist = math.sqrt(dx * dx + dy * dy)
-	return dist < ar + br
-end
 
 function Drop.Scrolling(dt)
     for i=#Drop.dropInScene,1,-1 do
@@ -40,13 +34,13 @@ function Drop.Scrolling(dt)
 end
 
 function Drop.chance()
-    local randChance = love.math.random(1, 2)
+    local randChance = love.math.random(1, Player.luck)
     print("luck: "..randChance)
     if randChance == 1 then
-        Drop.canDrop = false
+        Drop.canDrop = true
     end
     if randChance == 2 then
-        Drop.canDrop = true
+        Drop.canDrop = false
     end
 end
 
@@ -70,7 +64,9 @@ function Drop.manager(dt)
         if d.lifeTime <= 0 then
             table.remove(Drop.dropInScene, i)
         end
-        if math.checkCircularCollision(d.x, d.y, Player.x, Player.y, d.radius, Player.radius) then
+        if MathManager.checkCircularCollision(d.x, d.y, Player.x, Player.y, d.radius, Player.radius) then
+            SoundManager.sounds.healSound:stop()
+            SoundManager.sounds.healSound:play()
             Player.HP = Player.HP + Drop.healAmount
             table.remove(Drop.dropInScene, i)
         end
