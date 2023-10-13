@@ -19,6 +19,7 @@ function WinManager.win()
 end
 
 function WinManager.load()
+    WinManager.gameIsWon = false
 end
 
 function WinManager.update(dt)

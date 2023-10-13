@@ -79,6 +79,7 @@ end
 
 function Player.load()
   Player.HP = Player.maxHP
+  Player.isDead = false
   Player.x = UiManager.screenCenterX
   Player.y = UiManager.screenCenterY
 end

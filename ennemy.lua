@@ -19,7 +19,7 @@ Ennemy.ennemyList = {}
 Ennemy.ennemyInScene = {}
 
 Ennemy.healAmount = 1
-Ennemy.healCooldown = 3
+Ennemy.healCooldown = 1
 
 function Ennemy.Scrolling(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do
@@ -145,7 +145,7 @@ function Ennemy.heal(ennemy, dt)
     if ennemy.healCooldown <= 0 then
         ennemy.HP = ennemy.HP + ennemy.healAmount
         ennemy.healCooldown = Ennemy.healCooldown
-        print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
+        --print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
     end
 end
 

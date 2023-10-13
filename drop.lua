@@ -90,7 +90,7 @@ function Drop.draw()
     if DebugManager.debug == true then
         for i=#Drop.dropInScene,1,-1 do
             local d = Drop.dropInScene[i]
-            love.graphics.circle("line", d.x, d.y, d.healRadius)
+            love.graphics.circle("line", d.x, d.y, Drop.healRadius)
         end
     end
 end

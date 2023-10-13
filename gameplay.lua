@@ -1,6 +1,5 @@
 local Gameplay = {}
 
-local UiManager = require("uiManager")
 local Player = require("player")
 local Ennemy = require("ennemy")
 local Shoot = require("shoot")
@@ -39,6 +38,7 @@ function Gameplay.load()
     Player.load()
     Ennemy.load()
     Explosion.load()
+    WinManager.load()
 end
 
 function Gameplay.update(dt)

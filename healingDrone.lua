@@ -44,7 +44,9 @@ function HealingDrone.spawning(name, life, radius, healAmount)
 end
 
 function HealingDrone.load()
-    HealingDrone.spawning("HealingDrone",120, 100, 1)
+    if #HealingDrone.healdronesInScene < 1 then
+        HealingDrone.spawning("HealingDrone",120, 100, 1)
+    end
 end
 
 function HealingDrone.update(dt)

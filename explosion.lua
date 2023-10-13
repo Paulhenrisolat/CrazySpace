@@ -51,8 +51,6 @@ function Explosion.manager(dt)
 
         --Animation
         e.imgFrame = e.imgFrame + 5 * dt
-        
-        print(e.imgFrame)
         if e.imgFrame >= #Explosion.imgs + 1 then
             e.imgFrame = 1
         end

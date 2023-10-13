@@ -1,6 +1,7 @@
 local UiManager = {}
 
 local SoundManager = require("soundManager")
+
 UiManager.buttons = {}
 UiManager.buttonsInScene = {}
 
@@ -15,6 +16,7 @@ UiManager.mouseY = love.mouse.getY()
 UiManager.buttonSelectedname = "noBtn"
 
 UiManager.actualScene = "titleMenu"
+UiManager.canLoad = true
 
 function UiManager.createButton(name, img)
     local newButton = {}
@@ -81,6 +83,7 @@ function UiManager.buttonAction()
         local b = UiManager.buttonsInScene[i]
         if b.mouseOn == true then
             UiManager.actualScene = tostring(b.name)
+            UiManager.canLoad = true
             print("BTN pressed: "..UiManager.buttonSelectedname)
         end
     end
@@ -116,7 +119,6 @@ function UiManager.keypressed(key)
             local b = UiManager.buttonsInScene[i]
             --print(b.name.."/"..tostring(b.mouseOn))
         end
-        --UiManager.actualScene = "gameplay"
     end
 end
 

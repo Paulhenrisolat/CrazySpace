@@ -16,11 +16,11 @@ SoundManager.actualScene = "nill"
 --Change music for each scene
 function SoundManager.musicManager()
     if SoundManager.actualScene == "titleMenu" then
-        SoundManager.sounds.gameplayMusic:stop()
-        --SoundManager.sounds.titleMusic:play()
-    elseif SoundManager.actualScene == "gameplay" then
         SoundManager.sounds.titleMusic:stop()
         SoundManager.sounds.gameplayMusic:play()
+    elseif SoundManager.actualScene == "gameplay" then
+        SoundManager.sounds.gameplayMusic:stop()
+        SoundManager.sounds.titleMusic:play()
     end
 end
 
@@ -32,6 +32,7 @@ end
 function SoundManager.load()
     SoundManager.sounds.laserESound:setVolume(0.1)
     SoundManager.sounds.gameplayMusic:setVolume(0.1)
+    SoundManager.sounds.titleMusic:setVolume(0.1)
 end
 
 function SoundManager.update(dt)

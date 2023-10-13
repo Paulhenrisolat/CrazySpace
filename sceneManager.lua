@@ -9,6 +9,7 @@ local SoundManager = require("soundManager")
 local DebugManager = require("debugManager")
 
 SceneManager.actualScene = "noScene"
+SceneManager.canLoad = nill
 
 SceneManager.scenes = {}
 
@@ -42,6 +43,16 @@ function SceneManager.drawScene()
     end
 end
 
+function SceneManager.loadScene()
+    for i = #SceneManager.scenes,1,-1 do
+        local s = SceneManager.scenes[i]
+        if s.isActive == true and SceneManager.canLoad == true then
+            s.scene.load()
+            UiManager.canLoad = false
+        end
+    end
+end
+
 function SceneManager.load()
     SceneManager.addScene("titleMenu")
     SceneManager.addScene("gameplay")
@@ -49,7 +60,7 @@ function SceneManager.load()
 
     UiManager.load()
     TitleMenu.load()
-    Gameplay.load()
+    --Gameplay.load()
     Option.load()
     PauseMenu.load()
     SoundManager.load()
@@ -57,7 +68,9 @@ end
 
 function SceneManager.update(dt)
     SceneManager.changeScene()
+    SceneManager.loadScene()
     SceneManager.actualScene = UiManager.actualScene
+    SceneManager.canLoad = UiManager.canLoad
     SoundManager.actualScene = SceneManager.actualScene
     UiManager.update(dt)
     SoundManager.update(dt)
