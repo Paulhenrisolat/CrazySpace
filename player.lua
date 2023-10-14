@@ -102,7 +102,7 @@ end
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
   if Player.engineOn == true then
-    love.graphics.draw(Player.fireImg, Player.x, Player.y, Player.rotation,1,1,Player.fireImg:getWidth()/2,Player.fireImg:getHeight()/2)
+    --love.graphics.draw(Player.fireImg, Player.x, Player.y, Player.rotation,1,1,Player.fireImg:getWidth()/2,Player.fireImg:getHeight()/2)
   end
   love.graphics.print("HP: "..Player.HP.." / "..Player.maxHP)
   love.graphics.print("Kill: "..Player.kill.."Money: "..Player.money.." $",x,15)

@@ -24,6 +24,7 @@ function Option.draw()
     love.graphics.print("-- SPACE : Shoot", UiManager.screenCenterX, Option.InputY+130, 0,1,1, Option.InputOX,Option.InputOY)
     love.graphics.print("-- ESCAPE : Pause", UiManager.screenCenterX, Option.InputY+150, 0,1,1, Option.InputOX,Option.InputOY)
     love.graphics.print("-- RETURN : Finish game, return to menu", UiManager.screenCenterX, Option.InputY+170, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- TAB : Debug Mode", UiManager.screenCenterX, Option.InputY+190, 0,1,1, Option.InputOX,Option.InputOY)
     --Add created button
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
