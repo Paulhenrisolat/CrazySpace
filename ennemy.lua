@@ -10,8 +10,8 @@ local HealingDrone = require("healingDrone")
 local Explosion = require("explosion")
 local Drop = require("drop")
 
-Ennemy.mapWidth = 0
-Ennemy.mapHeight = 0
+Ennemy.mapWidth = 2000
+Ennemy.mapHeight = 2000
 
 Ennemy.startPartie = false
 

@@ -33,8 +33,8 @@ function Gameplay.Scrolling(dt)
 end
 
 function Gameplay.load()
-    Ennemy.mapWidth = Gameplay.bg:getWidth()
-    Ennemy.mapHeight = Gameplay.bg:getHeight()
+    --Ennemy.mapWidth = Gameplay.bg:getWidth()
+    --Ennemy.mapHeight = Gameplay.bg:getHeight()
     Player.load()
     Ennemy.load()
     Explosion.load()

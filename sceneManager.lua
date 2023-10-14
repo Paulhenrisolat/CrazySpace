@@ -60,7 +60,6 @@ function SceneManager.load()
 
     UiManager.load()
     TitleMenu.load()
-    --Gameplay.load()
     Option.load()
     PauseMenu.load()
     SoundManager.load()
@@ -69,10 +68,11 @@ end
 function SceneManager.update(dt)
     SceneManager.changeScene()
     SceneManager.loadScene()
+    SoundManager.actualScene = UiManager.actualScene
     SceneManager.actualScene = UiManager.actualScene
     SceneManager.canLoad = UiManager.canLoad
-    SoundManager.actualScene = SceneManager.actualScene
     UiManager.update(dt)
+    PauseMenu.update(dt)
     SoundManager.update(dt)
     if PauseMenu.isPaused == false then
         for i = #SceneManager.scenes,1,-1 do

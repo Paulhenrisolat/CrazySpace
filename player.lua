@@ -16,6 +16,7 @@ Player.actualSpeed = Player.speed
 Player.runSpeed = 500
 Player.rotSpeed = 3
 Player.img = love.graphics.newImage("img/spaceshipv1.png")
+Player.fireImg = love.graphics.newImage("img/fire.png") 
 Player.radius = Player.img:getWidth()/2
 -- stats
 Player.HP = 0
@@ -26,7 +27,8 @@ Player.projectileImage = love.graphics.newImage("img/ballp.png")
 Player.money = 0
 Player.kill = 0
 Player.isDead = false
-Player.luck = 5 --higher mean less chance to drop item
+Player.luck = 2 --higher mean less chance to drop item the minimu is 1
+Player.engineOn = false
 
 function Input(dt)
   if Player.HP > 0 then
@@ -35,6 +37,9 @@ function Input(dt)
       local vy = Player.speed * math.sin(Player.rotation) * dt
       --Player.x = Player.x + vx
       --Player.y = Player.y + vy
+      Player.engineOn = true
+    else
+      Player.engineOn = false
     end
     if love.keyboard.isDown("down","s") then    
       local vx = Player.speed * math.cos(Player.rotation) * dt
@@ -96,6 +101,9 @@ end
 
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
+  if Player.engineOn == true then
+    love.graphics.draw(Player.fireImg, Player.x, Player.y, Player.rotation,1,1,Player.fireImg:getWidth()/2,Player.fireImg:getHeight()/2)
+  end
   love.graphics.print("HP: "..Player.HP.." / "..Player.maxHP)
   love.graphics.print("Kill: "..Player.kill.."Money: "..Player.money.." $",x,15)
   Power.draw()

@@ -1,6 +1,7 @@
 local UiManager = {}
 
 local SoundManager = require("soundManager")
+--local PauseMenu = require("pauseMenu")
 
 UiManager.buttons = {}
 UiManager.buttonsInScene = {}
@@ -17,6 +18,7 @@ UiManager.buttonSelectedname = "noBtn"
 
 UiManager.actualScene = "titleMenu"
 UiManager.canLoad = true
+UiManager.isPaused = false
 
 function UiManager.createButton(name, img)
     local newButton = {}
@@ -55,19 +57,20 @@ function UiManager.mouseOnButton(dt)
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
 
-        if UiManager.actualScene ~= "gameplay" and b.x + b.imgOX >= UiManager.mouseX and b.x - b.imgOX <= UiManager.mouseX 
-           and b.y + b.imgOY >= UiManager.mouseY and b.y - b.imgOY <= UiManager.mouseY then
-            b.mouseOn = true
-            UiManager.buttonSelectedname = b.name
-            b.scaleW = 2
-            b.scaleH = 2
-            UiManager.buttonsSound = true
-        else
-            b.mouseOn = false
-            b.scaleW = 1
-            b.scaleH = 1
+        if UiManager.actualScene ~= "gameplay" or UiManager.isPaused == true then
+            if b.x + b.imgOX >= UiManager.mouseX and b.x - b.imgOX <= UiManager.mouseX 
+            and b.y + b.imgOY >= UiManager.mouseY and b.y - b.imgOY <= UiManager.mouseY then
+                b.mouseOn = true
+                UiManager.buttonSelectedname = b.name
+                b.scaleW = 2
+                b.scaleH = 2
+                UiManager.buttonsSound = true
+            else
+                b.mouseOn = false
+                b.scaleW = 1
+                b.scaleH = 1
+            end
         end
-
     end
 end
 
