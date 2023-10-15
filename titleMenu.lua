@@ -3,6 +3,8 @@ local TitleMenu = {}
 local UiManager = require("uiManager")
 local DebugManager = require("debugManager")
 
+TitleMenu.img = love.graphics.newImage("img/titleImg.png")
+
 function TitleMenu.load()
     UiManager.addButtton("gameplay", UiManager.screenCenterX,UiManager.screenCenterY)
     UiManager.addButtton("option", UiManager.screenCenterX,UiManager.screenCenterY+50)
@@ -13,6 +15,7 @@ function TitleMenu.update(dt)
 end
 
 function TitleMenu.draw()
+    love.graphics.draw(TitleMenu.img)
     love.graphics.print("CrazySpace",UiManager.screenCenterX-30,UiManager.screenCenterY-80)
     --Add created BTN
     for i = #UiManager.buttonsInScene,1,-1 do

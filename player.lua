@@ -20,14 +20,14 @@ Player.fireImg = love.graphics.newImage("img/fire.png")
 Player.radius = Player.img:getWidth()/2
 -- stats
 Player.HP = 0
-Player.maxHP = 100
+Player.maxHP = 5000
 Player.damage = 9
 Player.projectileSpeed = 1000
 Player.projectileImage = love.graphics.newImage("img/ballp.png")
 Player.money = 0
 Player.kill = 0
 Player.isDead = false
-Player.luck = 2 --higher mean less chance to drop item the minimu is 1
+Player.luck = 2 --higher mean less chance to drop item & the minimum is 1
 Player.engineOn = false
 
 function Input(dt)
@@ -65,7 +65,6 @@ function Player.collision()
   for i=#Shoot.projectiles,1,-1 do
     local b = Shoot.projectiles[i]
     if MathManager.checkCircularCollision(Player.x, Player.y, b.x, b.y, Player.radius, b.radius) and b.team == "ennemy" then
-        --print("take dmg !")
         SoundManager.sounds.hurtSound:stop()
         SoundManager.sounds.hurtSound:play()
         Player.HP = Player.HP - b.damage
@@ -76,7 +75,6 @@ end
 
 function Player.manager()
   if Player.HP <= 0 and Player.isDead == false then
-    --SoundManager.sounds.looseSound:stop()
     SoundManager.sounds.looseSound:play()
     Player.isDead = true
   end
@@ -87,12 +85,17 @@ function Player.load()
   Player.isDead = false
   Player.x = UiManager.screenCenterX
   Player.y = UiManager.screenCenterY
+  Player.kill = 0
+  Power.jaugeCount = 0
+  Power.isExecute = false
 end
 
 function Player.update(dt)
   Input(dt)
   Player.collision()
   Power.playerKill = Player.kill
+  Power.x = Player.x
+  Power.y = Player.y
   Power.update(dt)
   Shoot.playerSpeed = Player.actualSpeed
   Shoot.playerRotation = Player.rotation
@@ -102,10 +105,9 @@ end
 function Player.draw()
   love.graphics.draw(Player.img, Player.x, Player.y, Player.rotation, 1, 1,Player.img:getWidth()/2, Player.img:getHeight()/2)
   if Player.engineOn == true then
-    --love.graphics.draw(Player.fireImg, Player.x, Player.y, Player.rotation,1,1,Player.fireImg:getWidth()/2,Player.fireImg:getHeight()/2)
   end
   love.graphics.print("HP: "..Player.HP.." / "..Player.maxHP)
-  love.graphics.print("Kill: "..Player.kill.."Money: "..Player.money.." $",x,15)
+  love.graphics.print("Kill: "..Player.kill.." Money: "..Player.money.." $",x,15)
   Power.draw()
   --debug
   if DebugManager.debug == true then
@@ -124,6 +126,10 @@ function Player.keypressed(key)
   if key == "return" and Power.jaugeCount >= 7 then
     Player.kill = 0
     Power.jaugeCount = 0
+    Power.isExecute = true
+  end
+  if key == "," then
+    Player.kill = Player.kill + 1
   end
 end
 

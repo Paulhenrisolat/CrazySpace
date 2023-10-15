@@ -70,6 +70,9 @@ function Drop.manager(dt)
             Player.HP = Player.HP + Drop.healAmount
             table.remove(Drop.dropInScene, i)
         end
+        if Player.isDead == true then
+            table.remove(Drop.dropInScene, i)
+        end
     end
 end
 

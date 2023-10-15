@@ -9,7 +9,7 @@ local DeathManager = require("deathManager")
 local WinManager = require("winManager")
 local DebugManager = require("debugManager")
 
-Gameplay.bg = love.graphics.newImage("img/spaceia.jpg")
+Gameplay.bg = love.graphics.newImage("img/galaxy.png")
 Gameplay.mapWidth = Gameplay.bg:getWidth()
 Gameplay.mapHeight = Gameplay.bg:getHeight()
 Gameplay.bgOX = Gameplay.mapWidth/2

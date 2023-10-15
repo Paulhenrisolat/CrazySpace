@@ -9,6 +9,7 @@ local DebugManager = require("debugManager")
 local HealingDrone = require("healingDrone")
 local Explosion = require("explosion")
 local Drop = require("drop")
+local Power = require("power")
 
 Ennemy.mapWidth = 2000
 Ennemy.mapHeight = 2000
@@ -39,7 +40,7 @@ function Ennemy.Scrolling(dt)
     end
 end
 
---Creer ennemi
+--Create ennemy
 function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
     local newEnnemy = {}
     newEnnemy.name = tostring(name)
@@ -55,6 +56,7 @@ function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
     table.insert(Ennemy.ennemyList, newEnnemy)
 end
 
+--Add ennemy to scene
 function Ennemy.spawning(ennemySelected, nbEnnemy)
     for i=#Ennemy.ennemyList,1,-1 do 
         if #Ennemy.ennemyInScene < nbEnnemy and Ennemy.startPartie == true then
@@ -136,16 +138,17 @@ function Ennemy.collision()
                 end
             end
         end
+        if MathManager.checkCircularCollision(e.x, e.y, Power.x, Power.y, e.radius, Power.radius) and Power.isExecute == true then
+            e.HP = e.HP - Power.damage
+        end
     end
 end
 
 function Ennemy.heal(ennemy, dt)
     ennemy.healCooldown = ennemy.healCooldown - 1 * dt
-    --print(timer)
     if ennemy.healCooldown <= 0 then
         ennemy.HP = ennemy.HP + ennemy.healAmount
         ennemy.healCooldown = Ennemy.healCooldown
-        --print("Regen: "..ennemy.HP.." / "..ennemy.maxHP)
     end
 end
 
@@ -173,7 +176,8 @@ end
 
 function Ennemy.update(dt)
     HealingDrone.update(dt)
-    Ennemy.spawning(weakling, 10)
+    --Add ennemy : name,number
+    Ennemy.spawning(weakling, 25)
     Ennemy.Scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()

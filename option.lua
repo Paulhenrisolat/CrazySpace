@@ -21,10 +21,13 @@ function Option.draw()
     love.graphics.print("Option",x,y)
     love.graphics.draw(Option.InputImg, Option.InputX, Option.InputY, 0,1,1, Option.InputOX,Option.InputOY)
     love.graphics.print("-- Z/Q/S/D | UP/LEFT/DOWN/RIGHT ARROW : Movement", UiManager.screenCenterX, Option.InputY+110, 0,1,1, Option.InputOX,Option.InputOY)
-    love.graphics.print("-- SPACE : Shoot", UiManager.screenCenterX, Option.InputY+130, 0,1,1, Option.InputOX,Option.InputOY)
-    love.graphics.print("-- ESCAPE : Pause", UiManager.screenCenterX, Option.InputY+150, 0,1,1, Option.InputOX,Option.InputOY)
-    love.graphics.print("-- RETURN : Finish game, return to menu", UiManager.screenCenterX, Option.InputY+170, 0,1,1, Option.InputOX,Option.InputOY)
-    love.graphics.print("-- TAB : Debug Mode", UiManager.screenCenterX, Option.InputY+190, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- SHIFT : Accelerate", UiManager.screenCenterX, Option.InputY+130, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- SPACE : Shoot", UiManager.screenCenterX, Option.InputY+150, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- ESCAPE : Pause", UiManager.screenCenterX, Option.InputY+170, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- RETURN : Finish game and return to menu / Or use Power if fully charged", UiManager.screenCenterX, Option.InputY+190, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- TAB : Debug Mode", UiManager.screenCenterX, Option.InputY+210, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- NUMPAD + : Up Volume", UiManager.screenCenterX, Option.InputY+230, 0,1,1, Option.InputOX,Option.InputOY)
+    love.graphics.print("-- NUMPAD - : Low Volume", UiManager.screenCenterX, Option.InputY+250, 0,1,1, Option.InputOX,Option.InputOY)
     --Add created button
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
