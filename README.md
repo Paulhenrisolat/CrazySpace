@@ -1,2 +1,2 @@
 # CrazySpace
-Survive upgrade your spaceship as a new recruit from the space army.
+Destroy ennemy spaceship spaceship as a new recruit from the space army.
