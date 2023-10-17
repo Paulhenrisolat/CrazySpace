@@ -22,7 +22,7 @@ Ennemy.ennemyInScene = {}
 Ennemy.healAmount = 1
 Ennemy.healCooldown = 1
 
-function Ennemy.Scrolling(dt)
+function Ennemy.scrolling(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         if love.keyboard.isDown("up","z") and Player.HP > 0 then    
@@ -171,14 +171,14 @@ function Ennemy.load()
     HealingDrone.load()
     Ennemy.startPartie = true
     --Create ennemy : name,img,ballimg,life,speed,dmg,reloadtime
-    Ennemy.addEnnemy(weakling, "img/ennemy.png", "img/balle.png", 10, 160, 2, 1)
+    Ennemy.addEnnemy(weakling, "img/ennemyv2.png", "img/balle.png", 10, 160, 2, 1)
 end
 
 function Ennemy.update(dt)
     HealingDrone.update(dt)
     --Add ennemy : name,number
     Ennemy.spawning(weakling, 25)
-    Ennemy.Scrolling(dt)
+    Ennemy.scrolling(dt)
     Ennemy.manager(dt)
     Ennemy.collision()
     Ennemy.death()

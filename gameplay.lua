@@ -17,7 +17,7 @@ Gameplay.bgOY = Gameplay.mapHeight/2
 Gameplay.bgX = 0
 Gameplay.bgY = 0
 
-function Gameplay.Scrolling(dt)
+function Gameplay.scrolling(dt)
     if love.keyboard.isDown("up","z") and Player.HP > 0 then    
         local vx = Player.actualSpeed * math.cos(Player.rotation) * dt
         local vy = Player.actualSpeed * math.sin(Player.rotation) * dt
@@ -48,7 +48,7 @@ function Gameplay.update(dt)
     WinManager.update(dt)
     Explosion.update(dt)
     Drop.update(dt)
-    Gameplay.Scrolling(dt)
+    Gameplay.scrolling(dt)
 end
 
 function Gameplay.draw()

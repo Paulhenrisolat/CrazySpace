@@ -4,6 +4,7 @@ local UiManager = require("uiManager")
 local DebugManager = require("debugManager")
 
 TitleMenu.img = love.graphics.newImage("img/titleImg.png")
+TitleMenu.TitleImg = love.graphics.newImage("img/titleCrazySpace.png")
 
 function TitleMenu.load()
     UiManager.addButtton("gameplay", UiManager.screenCenterX,UiManager.screenCenterY)
@@ -16,7 +17,10 @@ end
 
 function TitleMenu.draw()
     love.graphics.draw(TitleMenu.img)
-    love.graphics.print("CrazySpace",UiManager.screenCenterX-30,UiManager.screenCenterY-80)
+    love.graphics.draw(TitleMenu.TitleImg,UiManager.screenCenterX,250,0,1,1,TitleMenu.TitleImg:getWidth()/2,TitleMenu.TitleImg:getHeight()/2)
+    love.graphics.print("Credits :",UiManager.screenCenterX-270,UiManager.screenCenterY+330)
+    love.graphics.print("Paul-henri Solat - Programming, Sprite, soundFX",UiManager.screenCenterX-270,UiManager.screenCenterY+350)
+    love.graphics.print("Royalty Free - Music",UiManager.screenCenterX-270,UiManager.screenCenterY+370)
     --Add created BTN
     for i = #UiManager.buttonsInScene,1,-1 do
         local b = UiManager.buttonsInScene[i]
@@ -27,7 +31,7 @@ function TitleMenu.draw()
     --Debug
     if DebugManager.debug == true then
         love.graphics.print("TitleMenu",x,y)
-        love.graphics.print("btn:"..#UiManager.buttons.." In scene:"..#UiManager.buttonsInScene.." Mouse Pos x:"..UiManager.mouseX.." y:"..UiManager.mouseY,x,15)
+        love.graphics.print("Mouse Pos x:"..UiManager.mouseX.." y:"..UiManager.mouseY,x,15)
         love.graphics.print("BTN Name :"..UiManager.buttonSelectedname,x,30)
     end
 end

@@ -21,7 +21,7 @@ function Shoot.shooting(px, py, prot, pimg, pspeed, pdmg, team)
     table.insert(Shoot.projectiles, newProjectile)
 end
 
-function Shoot.Scrolling(dt)
+function Shoot.scrolling(dt)
     if love.keyboard.isDown("up","z") then    
         local vx = Shoot.playerSpeed * math.cos(Shoot.playerRotation) * dt
         local vy = Shoot.playerSpeed * math.sin(Shoot.playerRotation) * dt
@@ -56,7 +56,7 @@ end
 
 function Shoot.update(dt)
     Shoot.projectileMovement(dt)
-    Shoot.Scrolling(dt)
+    Shoot.scrolling(dt)
 end
 
 function Shoot.draw()

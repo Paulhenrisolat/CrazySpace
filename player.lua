@@ -31,7 +31,7 @@ Player.luck = 2 --higher mean less chance to drop item & the minimum is 1
 Player.engineOn = false
 
 function Input(dt)
-  if Player.HP > 0 then
+  if Player.HP >= 0 then
     if love.keyboard.isDown("up","z") then    
       local vx = Player.speed * math.cos(Player.rotation) * dt
       local vy = Player.speed * math.sin(Player.rotation) * dt

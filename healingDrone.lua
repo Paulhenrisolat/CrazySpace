@@ -9,7 +9,7 @@ HealingDrone.mapHeight = 0
 HealingDrone.healdrones = {}
 HealingDrone.healdronesInScene = {}
 
-function HealingDrone.Scrolling(dt)
+function HealingDrone.scrolling(dt)
     for i=#HealingDrone.healdronesInScene,1,-1 do
         local h = HealingDrone.healdronesInScene[i]
         if love.keyboard.isDown("up","z") and Player.HP > 0 then    
@@ -50,7 +50,7 @@ function HealingDrone.load()
 end
 
 function HealingDrone.update(dt)
-    HealingDrone.Scrolling(dt)
+    HealingDrone.scrolling(dt)
 end
 
 function HealingDrone.draw()

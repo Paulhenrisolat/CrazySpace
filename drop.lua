@@ -15,7 +15,7 @@ Drop.dropInScene = {}
 Drop.lifeTime = 5
 Drop.canDrop = false
 
-function Drop.Scrolling(dt)
+function Drop.scrolling(dt)
     for i=#Drop.dropInScene,1,-1 do
         local d = Drop.dropInScene[i]
         if love.keyboard.isDown("up","z") and Player.HP > 0 then    
@@ -80,7 +80,7 @@ function Drop.load()
 end
 
 function Drop.update(dt)
-    Drop.Scrolling(dt)
+    Drop.scrolling(dt)
     Drop.manager(dt)
 end
 

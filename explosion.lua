@@ -12,7 +12,7 @@ Explosion.lifeTime = 1--0.5
 
 Explosion.explosionInScene = {}
 
-function Explosion.Scrolling(dt)
+function Explosion.scrolling(dt)
     for i=#Explosion.explosionInScene,1,-1 do
         local e = Explosion.explosionInScene[i]
         if love.keyboard.isDown("up","z") and Player.HP > 0 then    
@@ -64,7 +64,7 @@ function Explosion.load()
 end
 
 function Explosion.update(dt)
-    Explosion.Scrolling(dt)
+    Explosion.scrolling(dt)
     Explosion.manager(dt)
 end
 
