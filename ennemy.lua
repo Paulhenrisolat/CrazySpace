@@ -41,7 +41,7 @@ function Ennemy.scrolling(dt)
 end
 
 --Create ennemy
-function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
+function Ennemy.addEnnemy(name, img, ballimg, life, speed, runSpeed, damage, reloadTime)
     local newEnnemy = {}
     newEnnemy.name = tostring(name)
     newEnnemy.img = love.graphics.newImage(img)
@@ -50,6 +50,7 @@ function Ennemy.addEnnemy(name, img, ballimg, life, speed, damage, reloadTime)
     newEnnemy.oy = newEnnemy.img:getHeight()/2
     newEnnemy.life = life
     newEnnemy.speed = speed
+    newEnnemy.runSpeed = runSpeed
     newEnnemy.damage = damage
     newEnnemy.projectileSpeed = 1000
     newEnnemy.reloadTime = reloadTime
@@ -91,8 +92,8 @@ function Ennemy.manager(dt)
                 local rotationTowardHealingDrone = MathManager.angle(e.x, e.y, h.x, h.y)
                 e.rotation = rotationTowardHealingDrone
                 --go to healing drone
-                local vx = e.type.speed * math.cos(e.rotation) * dt
-                local vy = e.type.speed * math.sin(e.rotation) * dt
+                local vx = e.type.runSpeed * math.cos(e.rotation) * dt
+                local vy = e.type.runSpeed * math.sin(e.rotation) * dt
                 e.x = e.x + vx
                 e.y = e.y + vy
                 --Heal the ennemy
@@ -170,8 +171,8 @@ end
 function Ennemy.load()
     HealingDrone.load()
     Ennemy.startPartie = true
-    --Create ennemy : name,img,ballimg,life,speed,dmg,reloadtime
-    Ennemy.addEnnemy(weakling, "img/ennemyv2.png", "img/balle.png", 10, 160, 2, 1)
+    --Create ennemy : name,img,ballimg,life,speed,runSpeed,dmg,reloadtime
+    Ennemy.addEnnemy(weakling, "img/ennemyv2.png", "img/balle.png", 10, 160, 200, 2, 1)
 end
 
 function Ennemy.update(dt)
