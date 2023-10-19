@@ -6,7 +6,7 @@ local PauseMenu = require("pauseMenu")
 local Gameplay = require("gameplay")
 local Option = require("option")
 local SoundManager = require("soundManager")
-local DebugManager = require("debugManager")
+local DebugManager = require("debugManager")   
 
 SceneManager.actualScene = "noScene"
 SceneManager.canLoad = nill

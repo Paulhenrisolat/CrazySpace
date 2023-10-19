@@ -10,12 +10,12 @@ love.graphics.setDefaultFilter("nearest")
 local SceneManager = require("sceneManager")
 
 function love.load()
-    love.window.setTitle("CrazySpace !")
+    love.window.setTitle("CrazySpace !")      
     --love.window.setMode(1000, 800, {resizable=true})
     SceneManager.load()
 end
 
-function love.update(dt)
+function love.update(dt)  
     SceneManager.update(dt)
 end
 

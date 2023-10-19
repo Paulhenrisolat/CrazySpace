@@ -38,6 +38,7 @@ function Gameplay.load()
     Player.load()
     Ennemy.load()
     Explosion.load()
+    Drop.load()
     WinManager.load()
 end
 

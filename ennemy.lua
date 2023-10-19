@@ -19,6 +19,13 @@ Ennemy.startPartie = false
 Ennemy.ennemyList = {}
 Ennemy.ennemyInScene = {}
 
+Ennemy.ennemyState = {}
+Ennemy.ennemyState.chase = "chase"
+Ennemy.ennemyState.shoot = "shoot"
+Ennemy.ennemyState.escape = "escape"
+Ennemy.ennemyState.regen = "regen"
+Ennemy.ennemyState.noState = "noState"
+
 Ennemy.healAmount = 1
 Ennemy.healCooldown = 1
 
@@ -68,9 +75,11 @@ function Ennemy.spawning(ennemySelected, nbEnnemy)
                 newEnnemyInScene.type = e
                 newEnnemyInScene.x = love.math.random(Ennemy.mapWidth)
                 newEnnemyInScene.y = love.math.random(Ennemy.mapHeight)
+                newEnnemyInScene.rotation = 0
                 newEnnemyInScene.radius = e.img:getWidth()/2
                 newEnnemyInScene.maxHP = e.life
                 newEnnemyInScene.HP = e.life
+                newEnnemyInScene.state = Ennemy.ennemyState.chase
                 newEnnemyInScene.reloadTime = e.reloadTime
                 newEnnemyInScene.healAmount = Ennemy.healAmount
                 newEnnemyInScene.healCooldown = Ennemy.healCooldown
@@ -85,35 +94,29 @@ end
 function Ennemy.manager(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do 
         local e = Ennemy.ennemyInScene[i]
-        if e.HP < e.maxHP/2 and e.HP > 0 then 
-            --rotate to healing drone
-            for hi=#HealingDrone.healdronesInScene,1,-1 do
-                local h = HealingDrone.healdronesInScene[hi]
-                local rotationTowardHealingDrone = MathManager.angle(e.x, e.y, h.x, h.y)
-                e.rotation = rotationTowardHealingDrone
-                --go to healing drone
-                local vx = e.type.runSpeed * math.cos(e.rotation) * dt
-                local vy = e.type.runSpeed * math.sin(e.rotation) * dt
+        if Player.isDead == false then
+            if e.HP <= e.maxHP/2 then
+                e.state = Ennemy.ennemyState.escape
+            end
+            --STATE CHASE
+            if e.state == "chase" then
+                --rotate to player
+                local rotationTowardPlayer = MathManager.angle(e.x, e.y, Player.x, Player.y)
+                e.rotation = rotationTowardPlayer
+                --follow player
+                local vx = e.type.speed * math.cos(e.rotation) * dt
+                local vy = e.type.speed * math.sin(e.rotation) * dt
                 e.x = e.x + vx
                 e.y = e.y + vy
-                --Heal the ennemy
-                if MathManager.checkCircularCollision(e.x, e.y, h.x, h.y, e.radius, h.radius) then
-                    --print("heal :"..i)
-                    Ennemy.heal(e, dt)
+                if MathManager.dist(e.x,e.y,Player.x,Player.y) < 250 then
+                    e.state = Ennemy.ennemyState.shoot
                 end
             end
-        elseif Player.isDead == false then
-            --rotate to player
-            local rotationTowardPlayer = MathManager.angle(e.x, e.y, Player.x, Player.y)
-            e.rotation = rotationTowardPlayer
-            --follow player
-            local vx = e.type.speed * math.cos(e.rotation) * dt
-            local vy = e.type.speed * math.sin(e.rotation) * dt
-            e.x = e.x + vx
-            e.y = e.y + vy
-            --Shoot player
-            if MathManager.dist(e.x,e.y,Player.x,Player.y) < 250 then
-                --local reload = e.reloadTime
+            --STATE SHOOT
+            if e.state == "shoot" then
+                --rotate to player
+                local rotationTowardPlayer = MathManager.angle(e.x, e.y, Player.x, Player.y)
+                e.rotation = rotationTowardPlayer
                 e.reloadTime = e.reloadTime - 5*dt
                 if e.reloadTime <= 0 then
                     Shoot.shooting(e.x, e.y, e.rotation, e.type.projectileImage, e.type.projectileSpeed, e.type.damage, "ennemy")
@@ -122,7 +125,34 @@ function Ennemy.manager(dt)
                     e.reloadTime = 1
                 end
             end
-        end 
+            --STATE ESCAPE
+            if e.state == "escape" then
+                --rotate to healing drone
+                for hi=#HealingDrone.healdronesInScene,1,-1 do
+                    local h = HealingDrone.healdronesInScene[hi]
+                    local rotationTowardHealingDrone = MathManager.angle(e.x, e.y, h.x, h.y)
+                    e.rotation = rotationTowardHealingDrone
+                    --go to healing drone
+                    local vx = e.type.runSpeed * math.cos(e.rotation) * dt
+                    local vy = e.type.runSpeed * math.sin(e.rotation) * dt
+                    e.x = e.x + vx
+                    e.y = e.y + vy
+                    if MathManager.checkCircularCollision(e.x, e.y, h.x, h.y, e.radius, h.radius) then
+                        e.state = Ennemy.ennemyState.regen
+                    end
+                end
+            end
+            --STATE REGEN
+            if e.state == "regen" then
+                Ennemy.heal(e, dt)
+            end
+            if MathManager.dist(e.x,e.y,Player.x,Player.y) > 250 then
+                e.state = Ennemy.ennemyState.chase
+            end
+        --NO STATE
+        else
+            e.state = Ennemy.ennemyState.noState
+        end
     end
 end
 
@@ -169,6 +199,10 @@ function Ennemy.death()
 end
 
 function Ennemy.load()
+    --clear the table 
+    for i=#Ennemy.ennemyInScene,1,-1 do
+        table.remove(Ennemy.ennemyInScene, i)
+    end
     HealingDrone.load()
     Ennemy.startPartie = true
     --Create ennemy : name,img,ballimg,life,speed,runSpeed,dmg,reloadtime
@@ -190,7 +224,7 @@ function Ennemy.draw()
     for i=#Ennemy.ennemyInScene,1,-1 do
         local e = Ennemy.ennemyInScene[i]
         love.graphics.draw(e.type.img,e.x,e.y,e.rotation,1,1,e.type.ox,e.type.oy)
-        love.graphics.print("id: "..i.." HP: "..e.maxHP.."/"..e.HP,e.x,e.y-30)
+        love.graphics.print("id: "..i.." HP: "..e.HP.."/"..e.maxHP.." state:"..e.state,e.x,e.y-30)
     end
     --debug
     if DebugManager.debug == true then

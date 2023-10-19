@@ -77,6 +77,10 @@ function Drop.manager(dt)
 end
 
 function Drop.load()
+    --clear the table 
+    for i=#Drop.dropInScene,1,-1 do
+        table.remove(Drop.dropInScene, i)
+    end
 end
 
 function Drop.update(dt)
