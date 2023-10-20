@@ -26,7 +26,7 @@ Ennemy.ennemyState.escape = "escape"
 Ennemy.ennemyState.regen = "regen"
 Ennemy.ennemyState.noState = "noState"
 
-Ennemy.healAmount = 1
+Ennemy.healAmount = 2
 Ennemy.healCooldown = 1
 
 function Ennemy.scrolling(dt)
@@ -95,7 +95,9 @@ function Ennemy.manager(dt)
     for i=#Ennemy.ennemyInScene,1,-1 do 
         local e = Ennemy.ennemyInScene[i]
         if Player.isDead == false then
-            if e.HP <= e.maxHP/2 then
+            if MathManager.dist(e.x,e.y,Player.x,Player.y) > 250 and e.HP > e.maxHP/2 then
+                e.state = Ennemy.ennemyState.chase
+            elseif e.HP <= e.maxHP/2 then
                 e.state = Ennemy.ennemyState.escape
             end
             --STATE CHASE
@@ -145,9 +147,6 @@ function Ennemy.manager(dt)
             --STATE REGEN
             if e.state == "regen" then
                 Ennemy.heal(e, dt)
-            end
-            if MathManager.dist(e.x,e.y,Player.x,Player.y) > 250 then
-                e.state = Ennemy.ennemyState.chase
             end
         --NO STATE
         else
